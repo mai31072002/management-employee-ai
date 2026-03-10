@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import { message } from 'antd';
 import axios from "axios";
 import history from "@history";
 import Utils from "../helpers/utils";
@@ -48,7 +49,12 @@ class JwtService extends Utils.EventEmitter {
 
     signInWithUsernameAndPassword = (param) => 
         axios.post("/auth/login", param).then((res) => {
-            if (res.data.status !== 200) return Promise.reject(res.data.message);
+            if (res.data.status !== 200) {
+                message.success(
+                res.message ||
+                    `tài khoản hoặc mật khẩu không đúng`
+                );
+            };
             this.setSession(res.data.data);
             const decoded = jwtDecode(res.data.data.accessToken);
             const user = {

@@ -11,7 +11,7 @@ const ForgotPasswordModal = ({ open, onCancel }) => {
     const forgotPass = useSelector((state) => state.auth.auth.forgotPass);
 
     useEffect(() => {
-        if (forgotPass) {
+        if (forgotPass?.state != null) {
             notificationPopup(
                 forgotPass.status,
                 forgotPass.message
