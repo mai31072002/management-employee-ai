@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Select, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 const { Option } = Select;
 
@@ -10,6 +11,7 @@ const EditAccountForm = ({
     account
 }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && account) {
@@ -30,7 +32,7 @@ const EditAccountForm = ({
     return (
         <Modal
             open={open}
-            title="Chỉnh sửa thông tin tài khoản"
+            title={t("account.editAccountTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -48,28 +50,28 @@ const EditAccountForm = ({
                 </Form.Item>
 
                 <Form.Item
-                    label="Email"
+                    label={t("auth.email")}
                     name="email"
                     rules={[
-                        { required: true, message: "Vui lòng nhập email" },
-                        { type: "email", message: "Email không hợp lệ" }
+                        { required: true, message: t("account.validationEmailRequired") },
+                        { type: "email", message: t("account.validationEmailInvalid") }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Họ"
+                    label={t("common.firstName")}
                     name="firstName"
-                    rules={[{ required: true, message: "Vui lòng nhập họ" }]}
+                    rules={[{ required: true, message: t("account.validationFirstNameRequired") }]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Tên"
+                    label={t("common.lastName")}
                     name="lastName"
-                    rules={[{ required: true, message: "Vui lòng nhập tên" }]}
+                    rules={[{ required: true, message: t("account.validationLastNameRequired") }]}
                 >
                     <Input />
                 </Form.Item>
@@ -77,9 +79,9 @@ const EditAccountForm = ({
                 <Form.Item
                     label="Roles"
                     name="roles"
-                    rules={[{ required: true, message: "Vui lòng chọn role" }]}
+                    rules={[{ required: true, message: t("account.validationRolesRequired") }]}
                 >
-                    <Select mode="multiple" placeholder="Chọn role">
+                    <Select mode="multiple" placeholder={t("account.rolesPlaceholder")}>
                         <Option value="ADMIN">ADMIN</Option>
                         <Option value="USER">USER</Option>
                         <Option value="MANAGER">MANAGER</Option>
@@ -88,10 +90,10 @@ const EditAccountForm = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Lưu
+                        {t("common.save")}
                     </Button>
                 </Form.Item>
             </Form>

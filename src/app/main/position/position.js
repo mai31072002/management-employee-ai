@@ -8,9 +8,11 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AddEditPositionModal from "./component/AddEditPosition";
 import { notificationPopup } from "app/helpers/common";
 import './index.scss';
+import { useTranslation } from "react-i18next";
 
 const PositionManagement = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     // const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
@@ -63,8 +65,6 @@ const PositionManagement = () => {
 
     // ===== HANDLE SAVE =====
     const handleSubmit = async (values) => {
-        console.log("values submit", values);
-        
         if (editingPosition) {
             await dispatch(Actions.updatePosition(editingPosition.id, values));
         } else {
@@ -101,15 +101,15 @@ const PositionManagement = () => {
             if (res.status === 200) {
                 message.success(
                 res.message ||
-                    `Đã xóa ${positionName}`
+                    t("position.deleteSuccess", { name: positionName })
                 );
             } else {
-                message.error(res.message || "Lỗi khi xóa Lever!");
+                message.error(res.message || t("position.deleteError"));
             }
 
             setCheckDataList(true);
         } catch {
-            message.error("Lỗi khi xóa Lever!");
+            message.error(t("position.deleteError"));
         }
     };
 
@@ -131,37 +131,37 @@ const PositionManagement = () => {
     // ===== TABLE COLUMNS =====
     const columns = [
         {
-            title: "Chức vụ",
+            title: t("position.name"),
             dataIndex: "positionName",
             key: "positionName",
         },
         {
-            title: "Mô tả chi tiết",
+            title: t("position.description"),
             dataIndex: "description",
             key: "description",
         },
         {
-            title: "Lever",
+            title: t("position.level"),
             align: "center",
             dataIndex: "leverNumber",
             key: "leverNumber",
             render: (value) => value ? `Lever ${value}` : "-"
         },
         {
-            title: "Actions",
+            title: t("common.actions"),
             key: "actions",
             align: "center",
             render: (record) => {
                 return (
                     <Space>
-                        <Tooltip title="Cập nhật">
+                        <Tooltip title={t("common.update")}>
                             <Button
                                 type="text"
                                 icon={<EditOutlined style={{ color: "#1677ff" }} />}
                                 onClick={() => handleUpdate(record)}
                             />
                         </Tooltip>
-                        <Tooltip title="Xóa">
+                        <Tooltip title={t("common.delete")}>
                             <Button
                                 type="text"
                                 icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -177,9 +177,9 @@ const PositionManagement = () => {
     return (
         <Row className="position-page  page-base">
             <Col span="24" className="position-top">
-                <h2 className="position-title">Quản lý chức vụ</h2>
+                <h2 className="position-title">{t("position.title")}</h2>
                 <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleAdd}>
-                    Thêm chức vụ
+                    {t("position.add")}
                 </Button>
             </Col>
             <Col span="24" className="">

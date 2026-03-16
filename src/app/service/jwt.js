@@ -4,12 +4,19 @@ import axios from "axios";
 import history from "@history";
 import Utils from "../helpers/utils";
 import apiConfig from "../configs/api.config";
+import { getStoredLanguage } from "app/i18n/languageStorage";
 
 axios.defaults.baseURL = apiConfig.baseURL;
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-axios.defaults.headers.common["Accept-Language"] = "vi";
 axios.defaults.withCredentials = true;
 /*delete axios.defaults.headers.common.Authorization; */
+
+axios.interceptors.request.use((config) => {
+    const lang = getStoredLanguage();
+    config.headers = config.headers || {};
+    config.headers["Accept-Language"] = lang;
+    return config;
+});
 
 class JwtService extends Utils.EventEmitter {
   init() {
@@ -50,11 +57,10 @@ class JwtService extends Utils.EventEmitter {
     signInWithUsernameAndPassword = (param) => 
         axios.post("/auth/login", param).then((res) => {
             if (res.data.status !== 200) {
-                message.success(
-                res.message ||
-                    `tài khoản hoặc mật khẩu không đúng`
-                );
-            };
+                const msg = res.data?.message || "Tài khoản hoặc mật khẩu không đúng";
+                message.error(msg);
+                throw new Error(msg);
+            }
             this.setSession(res.data.data);
             const decoded = jwtDecode(res.data.data.accessToken);
             const user = {

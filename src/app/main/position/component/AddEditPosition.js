@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
+import { useTranslation } from "react-i18next";
 
 const AddEditPositionModal = ({
     open,
@@ -9,6 +10,7 @@ const AddEditPositionModal = ({
     onSubmit
 }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && position) {
@@ -31,7 +33,7 @@ const AddEditPositionModal = ({
     return (
         <Modal
             open={open}
-            title={position ? "Cập nhật chức vụ" : "Thêm chức vụ"}
+            title={position ? t("position.modalEditTitle") : t("position.modalAddTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -42,34 +44,34 @@ const AddEditPositionModal = ({
                 onFinish={handleFinish}
             >
                 <Form.Item
-                    label="Tên chức vụ"
+                    label={t("position.name")}
                     name="positionName"
                     rules={[
-                        { required: true, message: "Vui lòng nhập chức vụ" }
+                        { required: true, message: t("position.validationNameRequired") }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Mô tả chức vụ"
+                    label={t("position.description")}
                     name="description"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mô tả chức vụ" }
+                        { required: true, message: t("position.validationDescRequired") }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Cấp bậc"
+                    label={t("position.level")}
                     name="leverId"
                     rules={[
-                        { required: true, message: "Vui lòng chọn cấp bậc" }
+                        { required: true, message: t("position.validationLevelRequired") }
                     ]}
                 >
                     <Select
-                        placeholder="Chọn cấp bậc"
+                        placeholder={t("position.levelPlaceholder")}
                         options={(leverData || []).map(item => ({
                             value: item.id,
                             label: `Level ${item.leverNumber} - ${item.description}`
@@ -79,10 +81,10 @@ const AddEditPositionModal = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Lưu
+                        {t("common.save")}
                     </Button>
                 </Form.Item>
             </Form>

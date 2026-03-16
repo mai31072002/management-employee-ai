@@ -1,33 +1,51 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Modal, Form, Input, Button, notification } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as Actions from "app/auth/store/actions";
-import { notificationPopup } from "app/helpers/common";
+import { useTranslation } from "react-i18next";
 
 const ForgotPasswordModal = ({ open, onCancel }) => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
-    const forgotPass = useSelector((state) => state.auth.auth.forgotPass);
+    const forgotPass = useSelector((state) => state.login?.forgotPass);
+
+    const openNotificationWithIcon = useCallback((type) => {
+        switch (type) {
+            case "success":
+                return notification[type]({
+                    message: t("auth.forgotSuccessTitle"),
+                });
+            case "error":
+                return notification[type]({
+                    message: t("auth.forgotErrorTitle"),
+                    description: forgotPass.message,
+                });
+            default:
+                return type;
+        }
+    }, [t, forgotPass]);
 
     useEffect(() => {
-        if (forgotPass?.state != null) {
-            notificationPopup(
-                forgotPass.status,
-                forgotPass.message
-            );
-        }
-    }, [forgotPass]);
+        if (forgotPass?.status === null) return;
     
+        if (forgotPass?.status === 200) {
+            openNotificationWithIcon("success");
+            onCancel();
+        } else {
+            openNotificationWithIcon("error");
+        }
+    }, [forgotPass, onCancel, openNotificationWithIcon]);
+     
     const onFinish = (values) => {
         dispatch(Actions.forgotPass(values));
-        onCancel();
     };
 
     return (
         <Modal
             open={open}
-            title="Quên mật khẩu"
+            title={t("auth.forgotModalTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -35,10 +53,10 @@ const ForgotPasswordModal = ({ open, onCancel }) => {
             <Form layout="vertical" onFinish={onFinish}>
                 <Form.Item
                     name="username"
-                    label="Username"
+                    label={t("auth.username")}
                     rules={[
-                        { required: true, message: "Vui lòng nhập username" },
-                        { max: 128, message: "Không vượt quá 100 ký tự" }
+                        { required: true, message: t("auth.validation.usernameRequired") },
+                        { max: 128, message: t("auth.validation.max128") }
                     ]}
                 >
                     <Input prefix={<UserOutlined />} />
@@ -46,10 +64,10 @@ const ForgotPasswordModal = ({ open, onCancel }) => {
 
                 <Form.Item
                     name="email"
-                    label="Email"
+                    label={t("auth.email")}
                     rules={[
-                        { required: true, message: "Vui lòng nhập email" },
-                        { type: "email", message: "Email không hợp lệ" }
+                        { required: true, message: t("auth.validationEmailRequired") },
+                        { type: "email", message: t("auth.validationEmailInvalid") }
                     ]}
                 >
                     <Input prefix={<MailOutlined />} />
@@ -57,12 +75,12 @@ const ForgotPasswordModal = ({ open, onCancel }) => {
 
                 <Form.Item
                     name="newPassword"
-                    label="Mật khẩu mới"
+                    label={t("auth.newPassword")}
                     rules={[
-                        { required: true, message: "Vui lòng nhập mật khẩu mới" },
+                        { required: true, message: t("auth.validationNewPasswordRequired") },
                         {
                             pattern: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/,
-                            message: "Tối thiểu 8 ký tự, có chữ hoa, số & ký tự đặc biệt"
+                            message: t("auth.validationNewPasswordPattern")
                         }
                     ]}
                 >
@@ -70,7 +88,7 @@ const ForgotPasswordModal = ({ open, onCancel }) => {
                 </Form.Item>
 
                 <Button type="primary" htmlType="submit" block>
-                    Đổi mật khẩu
+                    {t("auth.changePassword")}
                 </Button>
             </Form>
         </Modal>

@@ -4,6 +4,7 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from "react-i18next";
 
 import EmployeeInfo from './EmployeeInfo';
 import AttendanceCalendar from './AttendanceCalendar';
@@ -13,6 +14,7 @@ import RewardPenalty from './RewardPenalty';
 
 const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
     const [activeKey, setActiveKey] = useState('info');
+    const { t } = useTranslation();
 
     return (
         <Modal
@@ -22,7 +24,7 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
             width="90%"
             centered
             destroyOnHidden
-            title={`Chi tiết nhân viên - ${employee?.fullName || ''}`}
+            title={t("employeeDetail.title", { name: employee?.fullName || "" })}
         >
             <Tabs
                 className="model-from"
@@ -34,31 +36,29 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
                             icon={<EditOutlined />}
                             onClick={onEdit}
                             className="btn-edit-employee"
-                            disabled={activeKey != 'info'}
+                            disabled={activeKey !== 'info'}
                         >
-                            Chỉnh sửa
+                            {t("employeeDetail.edit")}
                         </Button>
 
                         <Popconfirm
-                            title="Xóa nhân viên?"
+                            title={t("employeeDetail.deleteEmployeeTitle")}
                             description={
-                                <>
-                                    Bạn có chắc chắn muốn xoá <b>{employee?.fullName || ''}</b> và toàn bộ dữ liệu liên quan?
-                                </>
+                                t("employeeDetail.deleteEmployeeDesc", { name: employee?.fullName || "" })
                             }
                             onConfirm={onDelete}
-                            okText="Xóa"
+                            okText={t("common.delete")}
                             okType="danger"
-                            cancelText="Hủy"
+                            cancelText={t("common.cancel")}
                         >
                             <Button 
                                 size="small"
                                 danger 
                                 icon={<DeleteOutlined />}
                                 className="btn-delete-employee"
-                                disabled={activeKey != 'info'}
+                                disabled={activeKey !== 'info'}
                             >
-                                Xóa
+                                {t("common.delete")}
                             </Button>
                         </Popconfirm>
                     </Space>
@@ -66,31 +66,31 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
                 items={[
                     {
                         key: 'info',
-                        label: 'Thông tin cơ bản',
+                        label: t("employeeDetail.basicInfo"),
                         children: <EmployeeInfo employee={employee} />,
                     },
                     {
                         key: 'attendance',
-                        label: 'Chấm công',
+                        label: t("employeeDetail.attendance"),
                         children: (
                         <AttendanceCalendar employeeId={employee?.employeeId} />
                         ),
                     },
                     {
                         key: 'rewardPenalty',
-                        label: 'Thưởng / Phạt',
+                        label: t("employeeDetail.rewardPenalty"),
                         children: (
                         <RewardPenalty employee={employee} />
                         ),
                     },
                     {
                         key: 'ot',
-                        label: 'OT',
+                        label: t("employeeDetail.ot"),
                         children: <OtTable employee={employee} />,
                     },
                     {
                         key: 'salary',
-                        label: 'Tính lương',
+                        label: t("employeeDetail.salary"),
                         children: <SalaryInfo employeeId={employee?.employeeId} />,
                     },
                 ]}

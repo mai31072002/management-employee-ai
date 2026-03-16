@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Modal, Form, Input, Select, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import * as Actions from "../store/actions";
+import { useTranslation } from "react-i18next";
 
 const { Option } = Select;
 
@@ -12,6 +13,7 @@ const AddRoleForm = ({
 }) => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     const permission = useSelector(
         state => state.userRole.userRole.permissionList?.data || []
@@ -40,7 +42,7 @@ const AddRoleForm = ({
     return (
         <Modal
             open={open}
-            title="Thêm role mới"
+            title={t("userRole.modalAddRoleTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -51,35 +53,35 @@ const AddRoleForm = ({
                 onFinish={handleFinish}
             >
                 <Form.Item
-                    label="Tên role"
+                    label={t("userRole.roleName")}
                     name="roleName"
                     rules={[
-                        { required: true, message: "Vui lòng nhập tên role" }
+                        { required: true, message: t("userRole.validationRoleNameRequired") }
                     ]}
                 >
-                    <Input placeholder="VD: EMPLOYEE" />
+                    <Input placeholder="EMPLOYEE" />
                 </Form.Item>
 
                 <Form.Item
-                    label="Mô tả"
+                    label={t("userRole.roleDesc")}
                     name="description"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mô tả" }
+                        { required: true, message: t("userRole.validationRoleDescRequired") }
                     ]}
                 >
-                    <Input placeholder="VD: Nhân viên" />
+                    <Input placeholder={t("userRole.roleDesc")} />
                 </Form.Item>
 
                 <Form.Item
-                    label="Permission"
+                    label={t("userRole.permission")}
                     name="permission"
                     rules={[
-                        { required: true, message: "Vui lòng chọn permission" }
+                        { required: true, message: t("userRole.validationPermissionRequired") }
                     ]}
                 >
                     <Select
                         mode="multiple"
-                        placeholder="Chọn permission"
+                        placeholder={t("userRole.permissionPlaceholder")}
                     >
                         {permission.map(p => (
                             <Option key={p.id} value={p.id}>
@@ -91,10 +93,10 @@ const AddRoleForm = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Tạo role
+                        {t("userRole.createRole")}
                     </Button>
                 </Form.Item>
             </Form>

@@ -8,14 +8,16 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AddEditDepartmentModal from "./component/AddEditDepartment";
 import { notificationPopup } from "app/helpers/common";
 import './index.scss';
+import { useTranslation } from "react-i18next";
 
 const DepartmentManagement = () => {
     const dispatch = useDispatch();
-    const [page, setPage] = useState(1);
+    const { t } = useTranslation();
+    // const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
     const [openAddDepartment, setOpenAddDepartment] = useState(false);
-    const [openEdit, setOpenEdit] = useState(false);
+    // const [openEdit, setOpenEdit] = useState(false);
     const [editingDepartment, setEditingDepartment] = useState(null);
     // const [searchTerm, setSearchTerm] = useState("");
     // const [isSearching, setIsSearching] = useState(false);
@@ -47,9 +49,7 @@ const DepartmentManagement = () => {
     }, [checkDataList, dispatch]);
 
     useEffect(() => {
-        if (createUpdateDepartment != null && createUpdateDepartment.length != 0) {
-            console.log("createUpdateDepartment: ", createUpdateDepartment);
-            
+        if (createUpdateDepartment !== null && createUpdateDepartment.length !== 0) {
             notificationPopup(
                 createUpdateDepartment.status,
                 createUpdateDepartment.message
@@ -59,8 +59,6 @@ const DepartmentManagement = () => {
 
     // ===== HANDLE SAVE =====
     const handleSubmit = async (values) => {
-        console.log("values submit", values);
-        
         if (editingDepartment) {
             await dispatch(Actions.updateDepartment(editingDepartment.id, values));
         } else {
@@ -97,15 +95,15 @@ const DepartmentManagement = () => {
             if (res.status === 200) {
                 message.success(
                 res.message ||
-                    `Đã xóa ${departmentName} và toàn bộ dữ liệu liên quan.`
+                    t("department.deleteSuccess", { name: departmentName })
                 );
             } else {
-                message.error(res.message || "Lỗi khi xóa Phòng ban!");
+                message.error(res.message || t("department.deleteError"));
             }
 
             setCheckDataList(true);
         } catch {
-            message.error("Lỗi khi xóa Phòng ban!");
+            message.error(t("department.deleteError"));
         }
     };
 
@@ -127,30 +125,30 @@ const DepartmentManagement = () => {
     // ===== TABLE COLUMNS =====
     const columns = [
         {
-            title: "Phòng ban",
+            title: t("department.name"),
             dataIndex: "departmentName",
             key: "departmentName",
         },
         {
-            title: "Mô tả chi tiết",
+            title: t("department.description"),
             dataIndex: "description",
             key: "description",
         },
         {
-            title: "Actions",
+            title: t("common.actions"),
             key: "actions",
             align: "center",
             render: (record) => {
                 return (
                     <Space>
-                        <Tooltip title="Cập nhật">
+                        <Tooltip title={t("common.update")}>
                             <Button
                                 type="text"
                                 icon={<EditOutlined style={{ color: "#1677ff" }} />}
                                 onClick={() => handleUpdate(record)}
                             />
                         </Tooltip>
-                        <Tooltip title="Xóa">
+                        <Tooltip title={t("common.delete")}>
                             <Button
                                 type="text"
                                 icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -166,9 +164,9 @@ const DepartmentManagement = () => {
     return (
         <Row className="department-page  page-base">
             <Col span="24" className="department-top">
-                <h2 className="department-title">Quản lý phòng ban</h2>
+                <h2 className="department-title">{t("department.title")}</h2>
                 <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleAdd}>
-                    Thêm phòng ban
+                    {t("department.add")}
                 </Button>
             </Col>
             <Col span="24" className="">

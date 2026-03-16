@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Select, Button } from "antd";
-
-const { Option } = Select;
+import { Modal, Form, Input, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 const AddEditDepartmentModal = ({
     open,
@@ -10,6 +9,7 @@ const AddEditDepartmentModal = ({
     onSubmit
 }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && department) {
@@ -30,7 +30,7 @@ const AddEditDepartmentModal = ({
     return (
         <Modal
             open={open}
-            title={department ? "Cập nhật phòng ban" : "Thêm phòng ban"}
+            title={department ? t("department.modalEditTitle") : t("department.modalAddTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -41,20 +41,20 @@ const AddEditDepartmentModal = ({
                 onFinish={handleFinish}
             >
                 <Form.Item
-                    label="Tên phòng ban"
+                    label={t("department.name")}
                     name="departmentName"
                     rules={[
-                        { required: true, message: "Vui lòng nhập phòng ban" }
+                        { required: true, message: t("department.validationNameRequired") }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Mô tả phòng ban"
+                    label={t("department.description")}
                     name="description"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mô tả phòng ban" }
+                        { required: true, message: t("department.validationDescRequired") }
                     ]}
                 >
                     <Input />
@@ -62,10 +62,10 @@ const AddEditDepartmentModal = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Lưu
+                        {t("common.save")}
                     </Button>
                 </Form.Item>
             </Form>

@@ -15,6 +15,11 @@ import { Menu, Layout, Modal } from "antd";
 import history from "@history"; // đúng path của bạn
 import "./index.scss";
 import jwtService from "app/service/jwt";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import i18n from "app/i18n/i18n.config";
+import { setStoredLanguage } from "app/i18n/languageStorage";
+import { setLanguage } from "app/store/actions";
 
 const { Sider } = Layout;
 
@@ -22,28 +27,44 @@ function getItem(label, key, icon, children) {
   return { key, icon, children, label };
 }
 
-const items = [
-  getItem("Quản lý nhân viên", "/home", <TeamOutlined />),
-  getItem("Quản lý phòng ban", "/department", <ApartmentOutlined />),
-  getItem("Quản lý chức vụ", "/position", <SolutionOutlined />),
-  getItem("Quản lý cấp bặc", "/lever", <RiseOutlined />),
-  getItem("OT", "/ot-date", <FieldTimeOutlined />),
-  getItem("Cài đặt", "sub1", <SettingOutlined />, [
-    getItem("Tài khoản", "/account", <UserOutlined />),
-    getItem("Phân quyền", "/user-role", <BranchesOutlined />),
-    getItem("Đăng xuất", "logout", <LogoutOutlined />),
-  ]),
-  getItem("Files", "/files", <FileOutlined />),
-];
-
 const Sidebar = ({ collapsed, onCollapse }) => {
+    const dispatch = useDispatch();
+    const { t } = useTranslation();
+    // const language = useSelector((state) => state.language?.language);
+
+    const items = [
+        getItem(t("sidebar.employeeManagement"), "/home", <TeamOutlined />),
+        getItem(t("sidebar.departmentManagement"), "/department", <ApartmentOutlined />),
+        getItem(t("sidebar.positionManagement"), "/position", <SolutionOutlined />),
+        getItem(t("sidebar.leverManagement"), "/lever", <RiseOutlined />),
+        getItem(t("sidebar.ot"), "/ot-date", <FieldTimeOutlined />),
+        getItem(t("common.language"), "language", <SettingOutlined />, [
+            getItem(t("common.vietnamese"), "lang_vi"),
+            getItem(t("common.english"), "lang_en"),
+        ]),
+        getItem(t("sidebar.settings"), "sub1", <SettingOutlined />, [
+            getItem(t("sidebar.account"), "/account", <UserOutlined />),
+            getItem(t("sidebar.authorization"), "/user-role", <BranchesOutlined />),
+            getItem(t("sidebar.logoutTitle"), "logout", <LogoutOutlined />),
+        ]),
+        getItem(t("sidebar.files"), "/files", <FileOutlined />),
+    ];
+
     const handleMenuClick = ({ key }) => {
+        if (key === "lang_vi" || key === "lang_en") {
+            const nextLang = key === "lang_en" ? "en" : "vi";
+            setStoredLanguage(nextLang); // Check đang chọn ngôn ngữ nào
+            i18n.changeLanguage(nextLang); // Hàm i18n chuyển đổi ngôn ngữ
+            dispatch(setLanguage(nextLang)); // Lưu redux
+            return;
+        }
+
         if (key === "logout") {
             Modal.confirm({
-                title: "Đăng xuất",
-                content: "Bạn có chắc chắn muốn đăng xuất?",
-                okText: "Đăng xuất",
-                cancelText: "Hủy",
+                title: t("sidebar.logoutTitle"),
+                content: t("sidebar.logoutConfirm"),
+                okText: t("sidebar.logoutOk"),
+                cancelText: t("common.cancel"),
                 onOk: () => jwtService.logout(),
             });
             return;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Table, DatePicker, Tag, Select, Button, Space, Tooltip, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
@@ -7,10 +7,12 @@ import AddEditRewardPenalty from './AddEditRewardPenalty';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import * as Actions from "../store/actions";
 import "../index.scss";
+import { useTranslation } from "react-i18next";
 
 const RewardPenalty = ({ employee }) => {
     const { RangePicker } = DatePicker;
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [fromDate, setFromDate] = useState(dayjs().startOf('month'));
     const [toDate, setToDate] = useState(dayjs().endOf('month'));
     const [rewardPenaltyModal, setRewardPenaltyModal] = useState(false);
@@ -24,6 +26,23 @@ const RewardPenalty = ({ employee }) => {
 
     // console.log("createUpdateDeleteRewardPenalty: ", createUpdateDeleteRewardPenalty);
 
+    const handleDelete = useCallback((values) => {
+        Modal.confirm({
+            title: t("common.confirmDeleteTitle"),
+            content: t("rewardPenalty.confirmDeleteContent", {
+                reason: values.reason,
+                month: values.month,
+            }),
+            okText: t("common.delete"),
+            cancelText: t("common.cancel"),
+            okType: "danger",
+            onOk() {
+                dispatch(Actions.DeleteRewardPenalty(values.id));
+                setCheckDataList(true);
+            },
+        });
+    }, [dispatch, t]);
+
     // ---------------------------------
     // COLUMNS
     // ---------------------------------
@@ -32,21 +51,21 @@ const RewardPenalty = ({ employee }) => {
         {
             width: 150,
             key: 'employeeName',
-            title: 'Họ tên',
+            title: t("rewardPenalty.fullName"),
             dataIndex: 'employeeName',
         },
         {
             width: 150,
             align: "center",
             key: 'month',
-            title: 'Tháng',
+            title: t("rewardPenalty.month"),
             dataIndex: 'month',
         },
         {
             width: 150,
             align: "center",
             key: 'amount',
-            title: 'Số tiền',
+            title: t("rewardPenalty.amount"),
             dataIndex: 'amount',
             render: (amount) =>
                 amount?.toLocaleString('vi-VN') + ' ₫',
@@ -54,23 +73,23 @@ const RewardPenalty = ({ employee }) => {
         {
             width: 250,
             key: 'reason',
-            title: 'Lý do',
+            title: t("rewardPenalty.reason"),
             dataIndex: 'reason',
         },
         {
             width: 120,
             align: "center",
             key: 'type',
-            title: 'Loại',
+            title: t("rewardPenalty.type"),
             dataIndex: 'type',
             render: (type) => (
                 <Tag color={type === 0 ? "green" : "red"}>
-                    {type === 0 ? "Thưởng" : "Phạt"}
+                    {type === 0 ? t("rewardPenalty.typeReward") : t("rewardPenalty.typePenalty")}
                 </Tag>
             ),
         },
         {
-        title: "Thao tác",
+        title: t("common.actions"),
         key: "actions",
         align: "center",
         fixed: "right",
@@ -78,14 +97,14 @@ const RewardPenalty = ({ employee }) => {
         render: (record) => {
             return (
                 <Space>
-                    <Tooltip title="Cập nhật">
+                    <Tooltip title={t("common.update")}>
                         <Button
                             type="text"
                             icon={<EditOutlined style={{ color: "#1677ff" }} />}
                             onClick={() => handleOpenExit(record)}
                         />
                     </Tooltip>
-                    <Tooltip title="Xóa">
+                    <Tooltip title={t("common.delete")}>
                         <Button
                             type="text"
                             icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -96,7 +115,7 @@ const RewardPenalty = ({ employee }) => {
             );
         },
     }
-    ], []);
+    ], [t, handleDelete]);
 
     // ---------------------------------
     // EFFECT
@@ -195,25 +214,6 @@ const RewardPenalty = ({ employee }) => {
         setRewardPenaltyModal(false);
     }
 
-    const handleDelete = (values) => {
-        Modal.confirm({
-            title: "Xác nhận xóa",
-            content: (
-                <>
-                    Bạn có chắc chắn muốn xóa{" "}
-                    <b>{values.reason} - {values.month}</b>{" "}
-                    này không?
-                </>
-            ),
-            okText: "Xóa",
-            cancelText: "Hủy",
-            okType: "danger",
-            onOk() {
-                dispatch(Actions.DeleteRewardPenalty(values.id));
-                setCheckDataList(true);
-            },
-        });
-    };
 
     return (
         <>
@@ -231,14 +231,14 @@ const RewardPenalty = ({ employee }) => {
                     className="reward-penalty-select"
                     onChange={handleChange}
                     options={[
-                        { value: '', label: 'Tât cả' },
-                        { value: '0', label: 'Thưởng' },
-                        { value: '1', label: 'Phạt' }
+                        { value: '', label: t("common.all") },
+                        { value: '0', label: t("rewardPenalty.typeReward") },
+                        { value: '1', label: t("rewardPenalty.typePenalty") }
                     ]}
                 />
 
                 <Button type="primary" icon={<PlusOutlined/>} onClick={handleOpenAdd}>  
-                    Thêm Thưởng/Phạt
+                    {t("rewardPenalty.add")}
                 </Button>
             </div>
 

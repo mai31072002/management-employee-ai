@@ -1,6 +1,7 @@
 import { Avatar, Row, Col, Tag } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useTranslation } from "react-i18next";
 
 const Item = ({ label, value, span = 12 }) => (
     <Col span={span}>
@@ -10,6 +11,7 @@ const Item = ({ label, value, span = 12 }) => (
 );
 
 const EmployeeInfo = ({ employee }) => {
+    const { t } = useTranslation();
     if (!employee) return null;
 
     return (
@@ -30,7 +32,7 @@ const EmployeeInfo = ({ employee }) => {
 
                 <div style={{ marginTop: 6 }}>
                     <Tag color="blue" style={{ marginTop: 8 }}>
-                        {employee?.position || 'Chưa có chức vụ'} - {employee.department || 'Chưa có phòng ban'}
+                        {employee?.position || t("account.noPosition")} - {employee.department || t("account.noDepartment")}
                     </Tag>
                 </div>
             </Col>
@@ -38,39 +40,39 @@ const EmployeeInfo = ({ employee }) => {
             {/* Info */}
             <Col span={24} md={18}>
                 <Row gutter={[16, 16]}>
-                    <Item label="Mã NV" value={employee.employeesCode} />
-                    <Item label="Username" value={employee.username} />
-                    <Item label="Ngày sinh" value={dayjs(employee.birthday).format('DD/MM/YYYY')} />
-                    <Item label="Giới tính" value={employee.gender === 1 ? 'Nam' : 'Nữ'} />
-                    <Item label="SĐT" value={employee.phone} />
-                    <Item label="Email" value={employee.email} span={24} />
-                    <Item label="Quản lý" value={employee.manages} />
+                    <Item label={t("account.employeeCode")} value={employee.employeesCode} />
+                    <Item label={t("userRole.username")} value={employee.username} />
+                    <Item label={t("account.birthday")} value={dayjs(employee.birthday).format('DD/MM/YYYY')} />
+                    <Item label={t("account.gender")} value={employee.gender === 1 ? t("employee.genderValue.male") : t("employee.genderValue.female")} />
+                    <Item label={t("account.phone")} value={employee.phone} />
+                    <Item label={t("userRole.email")} value={employee.email} span={24} />
+                    <Item label={t("account.manager")} value={employee.manages} />
 
                     <Item
-                        label="Thời gian công tác"
+                        label={t("account.workTime")}
                         span={24}
                         value={
                         employee.startDate
                             ? `${dayjs(employee.startDate).format('DD/MM/YYYY')} → ${
                                 employee.endDate
                                 ? dayjs(employee.endDate).format('DD/MM/YYYY')
-                                : 'Hiện tại'
+                                : t("account.present")
                             }`
                             : '—'
                         }
                     />
 
                     <Item
-                        label="Địa chỉ"
+                        label={t("account.address")}
                         span={24}
                         value={`${employee.address}, ${employee.district}, ${employee.province}`}
                     />
 
                     <Item
-                        label="Trạng thái"
+                        label={t("account.status")}
                         value={
                             <Tag color={employee.status === 1 ? 'green' : 'red'}>
-                                {employee.status === 1 ? 'Đang làm việc' : 'Ngừng làm việc'}
+                                {employee.status === 1 ? t("account.working") : t("account.stopped")}
                             </Tag>
                         }
                     />

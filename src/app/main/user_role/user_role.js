@@ -9,9 +9,11 @@ import AddRoleForm from "./components/AddRole";
 import AddEditUser from "./components/AddEditUser";
 import { notificationPopup } from "app/helpers/common";
 import './index.scss';
+import { useTranslation } from "react-i18next";
 
 const RoleManagement = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
@@ -113,7 +115,7 @@ const RoleManagement = () => {
         }
         setIsSearching(true);
         dispatch(Actions.fetchSearchUser(trimmed, 0, limit)).catch(() => {
-            message.error("Không thể tìm kiếm ứng viên");
+            message.error(t("userRole.searchError"));
         });
     };
 
@@ -131,17 +133,17 @@ const RoleManagement = () => {
     // ===== TABLE COLUMNS =====
     const columns = [
         {
-            title: "Username",
+            title: t("userRole.username"),
             dataIndex: "username",
             key: "username",
         },
         {
-            title: "Email",
+            title: t("userRole.email"),
             dataIndex: "email",
             key: "email",
         },
         {
-            title: "Roles",
+            title: t("userRole.roles"),
             key: "roles",
             render: (record) => {
                 const descriptions = mapRoleNamesToDescriptions(record.roles, roleOptions);
@@ -156,7 +158,7 @@ const RoleManagement = () => {
             }
         },
         {
-            title: "Actions",
+            title: t("common.actions"),
             key: "actions",
             align: "center",
             render: (_, record) => (
@@ -192,9 +194,9 @@ const RoleManagement = () => {
     return (
         <Row className="user-role-page  page-base">
             <Col span="24" className="user-role-top">
-                <h2 className="user-role-title">Quản lý phân quyền</h2>
+                <h2 className="user-role-title">{t("userRole.title")}</h2>
                 <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={() => setOpenAddRole(true)}>
-                    Thêm Role mới
+                    {t("userRole.addRole")}
                 </Button>
             </Col>
             <Col span={24} className="header-candidate">
@@ -208,7 +210,7 @@ const RoleManagement = () => {
                             options={autoCompleteOptions}
                         >
                             <Input
-                                placeholder="Tìm kiếm theo tên, mã công nhân, công ty..."
+                                placeholder={t("userRole.searchPlaceholder")}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyDown={(e) => {
@@ -266,7 +268,7 @@ const RoleManagement = () => {
                         >
                             {/* BÊN TRÁI */}
                             <div>
-                                Tổng tài khoản : {totalElement}
+                                {t("userRole.totalAccounts", { count: totalElement })}
                             </div>
 
                             {/* BÊN PHẢI */}

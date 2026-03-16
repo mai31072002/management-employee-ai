@@ -41,12 +41,15 @@ export const submitLogin = (param) => (dispatch) => {
       return user;
     })
     .catch((error) => {
+      const status = error?.response?.status || 500;
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Đăng nhập không thành công. Vui lòng kiểm tra lại tài khoản hoặc mật khẩu.";
       dispatch({
         type: AUTH_ERROR,
-        payload: error,
+        payload: { status, message },
       });
-
-      throw error;
     });
 };
 
@@ -132,22 +135,36 @@ export const fetchEmployeeDetail = (id) => async (dispatch) => {
 };
 
 export const forgotPass = (data) => async (dispatch) => {
-    const res = await axios.post(`/auth/forgot-password`, data);
+    try {
+        const res = await axios.post(`/auth/forgot-password`, data);
 
-    console.log("res forgotPass: ", res);
+        if (res.data && res.data.status === 200) {
+            dispatch({
+                type: FORGOT_PASS,
+                payload: res.data,
+            });
+        } else {
+            dispatch({
+                type: FORGOT_PASS_ERROR,
+                payload: res.data,
+            });
+        }
 
-    if (res.data && res.data.status === 200) {
-        dispatch({
-            type: FORGOT_PASS,
-            payload: res.data,
-        });    
-    } else {
+        return res.data;
+    } catch (error) {
+        const payload =
+            error?.response?.data || {
+                status: error?.response?.status || 500,
+                message: "Lấy lại mật khẩu không thành công. Vui lòng thử lại sau.",
+            };
+
         dispatch({
             type: FORGOT_PASS_ERROR,
-            payload: res.data
-        })
+            payload,
+        });
+
+        return payload;
     }
-    return res.data;
 };
 
 // Xóa token login và ra trang login

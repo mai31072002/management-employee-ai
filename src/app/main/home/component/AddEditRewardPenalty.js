@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, DatePicker, Select, InputNumber } from "antd";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEdit }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && dataAddAndEdit) {
@@ -22,7 +24,7 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
                 type: 0,
             });
         }
-    }, [open, dataAddAndEdit]);
+    }, [form, open, dataAddAndEdit]);
 
     const handleOk = async () => {
         try {
@@ -46,12 +48,12 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
 
     return (
         <Modal
-            title={dataAddAndEdit ? "Cập nhật Thưởng / Phạt" : "Thêm Thưởng / Phạt"}
+            title={dataAddAndEdit ? t("rewardPenalty.editTitle") : t("rewardPenalty.addTitle")}
             open={open}
             onOk={handleOk}
             onCancel={onCancel}
-            okText="Lưu"
-            cancelText="Hủy"
+            okText={t("common.save")}
+            cancelText={t("common.cancel")}
             destroyOnHidden
         >
             <Form
@@ -63,9 +65,9 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
                 }}
             >
                 <Form.Item
-                    label="Ngày - Tháng"
+                    label={t("rewardPenalty.dateMonth")}
                     name="month"
-                    rules={[{ required: true, message: "Vui lòng chọn tháng" }]}
+                    rules={[{ required: true, message: t("rewardPenalty.selectMonthRequired") }]}
                 >
                     <DatePicker
                         picker="date"
@@ -76,10 +78,10 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
                 </Form.Item>
 
                 <Form.Item
-                    label="Số tiền"
+                    label={t("rewardPenalty.amount")}
                     name="amount"
                     rules={[
-                        { required: true, message: "Vui lòng nhập số tiền" },
+                        { required: true, message: t("rewardPenalty.amountRequired") },
                     ]}
                 >
                     <InputNumber
@@ -93,24 +95,24 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
                 </Form.Item>
 
                 <Form.Item
-                    label="Lý do"
+                    label={t("rewardPenalty.reason")}
                     name="reason"
                     rules={[
-                        { required: true, message: "Vui lòng nhập lý do" },
+                        { required: true, message: t("rewardPenalty.reasonRequired") },
                     ]}
                 >
                     <Input.TextArea rows={3} />
                 </Form.Item>
 
                 <Form.Item
-                    label="Loại"
+                    label={t("rewardPenalty.type")}
                     name="type"
                     rules={[{ required: true }]}
                 >
                     <Select
                         options={[
-                            { value: 0, label: "Thưởng" },
-                            { value: 1, label: "Phạt" },
+                            { value: 0, label: t("rewardPenalty.typeReward") },
+                            { value: 1, label: t("rewardPenalty.typePenalty") },
                         ]}
                     />
                 </Form.Item>

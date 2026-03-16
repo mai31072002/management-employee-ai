@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Row, Col, Select, Radio, DatePicker, TimePicker, InputNumber } from "antd";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 const AddEditOT = ({
     open,
@@ -11,6 +12,7 @@ const AddEditOT = ({
 }) => {
     const [form] = Form.useForm();
     const { Option } = Select;
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (otDay) {
@@ -30,7 +32,7 @@ const AddEditOT = ({
                 employeeId: employee.employeeId,
             });
         }
-    }, [otDay, form]);
+    }, [otDay, form, employee]);
 
     const handleFinish = (values) => {
         const reqData = {
@@ -62,12 +64,12 @@ const AddEditOT = ({
 
     return (
         <Modal
-            title={otDay ? "Sửa OT" : "Thêm OT"}
+            title={otDay ? t("ot.modalEditTitle") : t("ot.modalAddTitle")}
             open={open}
             onOk={() => form.submit()}
             onCancel={onCancel}
-            okText="Lưu"
-            cancelText="Hủy"
+            okText={t("common.save")}
+            cancelText={t("common.cancel")}
             centered
             destroyOnHidden
             width={600}
@@ -86,16 +88,16 @@ const AddEditOT = ({
                     <Input />
                 </Form.Item>
                 {/* Employee */}
-                <Form.Item name="fullName" label="Nhân viên">
+                <Form.Item name="fullName" label={t("ot.employeeName")}>
                     <Input disabled />
                 </Form.Item>
 
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
-                            label="Ngày làm OT"
+                            label={t("ot.workDate")}
                             name="workDate"
-                            rules={[{ required: true, message: "Chọn ngày OT" }]}
+                            rules={[{ required: true, message: t("ot.selectOtDate") }]}
                         >
                             <DatePicker
                                 format="DD/MM/YYYY"
@@ -109,14 +111,14 @@ const AddEditOT = ({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Loại OT"
+                            label={t("ot.otType")}
                             name="otType"
-                            rules={[{ required: true, message: "Chọn loại OT" }]}
+                            rules={[{ required: true, message: t("ot.selectOtType") }]}
                         >
                             <Select>
-                                <Option value="0">OT ngày thường</Option>
-                                <Option value="1">OT cuối tuần</Option>
-                                <Option value="2">OT lễ</Option>
+                                <Option value="0">{t("ot.typeNormal")}</Option>
+                                <Option value="1">{t("ot.typeWeekend")}</Option>
+                                <Option value="2">{t("ot.typeHoliday")}</Option>
                             </Select>
                         </Form.Item>
                     </Col>
@@ -125,9 +127,9 @@ const AddEditOT = ({
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
-                            label="Giờ bắt đầu"
+                            label={t("ot.startTime")}
                             name="startTime"
-                            rules={[{ required: true, message: "Chọn giờ bắt đầu" }]}
+                            rules={[{ required: true, message: t("ot.selectStartTime") }]}
                         >
                             <TimePicker 
                                 format="HH:mm" 
@@ -139,17 +141,17 @@ const AddEditOT = ({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Giờ kết thúc"
+                            label={t("ot.endTime")}
                             name="endTime"
                             dependencies={["startTime"]}
                             rules={[
-                                { required: true, message: "Chọn giờ kết thúc" },
+                                { required: true, message: t("ot.selectEndTime") },
                                 ({ getFieldValue }) => ({
                                     validator(_, value) {
                                         const start = getFieldValue("startTime");
                                         if (!value || !start) return Promise.resolve();
                                         if (value.isBefore(start)) {
-                                            return Promise.reject("Giờ kết thúc phải sau giờ bắt đầu");
+                                            return Promise.reject(t("ot.endTimeAfterStart"));
                                         }
                                         return Promise.resolve();
                                     },
@@ -166,25 +168,25 @@ const AddEditOT = ({
                 </Row>
 
                 <Form.Item
-                    label="Số phút OT"
+                    label={t("ot.otMinutes")}
                     name="otMinutes"
-                    rules={[{ required: true, message: "Nhập số phút OT" }]}
+                    rules={[{ required: true, message: t("ot.otMinutesRequired") }]}
                 >
                     <InputNumber min={1} className="w-100" disabled />
                 </Form.Item>
 
                 <Form.Item
-                    label="Công việc"
+                    label={t("ot.jobTitle")}
                     name="jobTitle"
-                    rules={[{ required: true, message: "Nhập công việc OT" }]}
+                    rules={[{ required: true, message: t("ot.jobTitleRequired") }]}
                 >
-                    <Input placeholder="VD: Trực ca đêm" />
+                    <Input placeholder={t("ot.jobTitle")} />
                 </Form.Item>
 
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
-                            label="Người duyệt"
+                            label={t("ot.approvedBy")}
                             name="approvedBy"
                         >
                             <Input />
@@ -193,7 +195,7 @@ const AddEditOT = ({
 
                     <Col span={12}>
                         <Form.Item
-                            label="Thời gian duyệt"
+                            label={t("ot.approvedAt")}
                             name="approvedAt"
                         >
                             <DatePicker
@@ -206,7 +208,7 @@ const AddEditOT = ({
                 </Row>
 
                 <Form.Item
-                    label="Hệ số OT"
+                    label={t("ot.otRate")}
                     name="otRate"
                     rules={[{ required: true }]}
                 >
@@ -214,14 +216,14 @@ const AddEditOT = ({
                 </Form.Item>
 
                 <Form.Item
-                    label="Trạng thái"
+                    label={t("ot.status")}
                     name="status"
                     rules={[{ required: true }]}
                 >
                     <Radio.Group>
-                        <Radio value={0}>Chờ duyệt</Radio>
-                        <Radio value={1}>Đã duyệt</Radio>
-                        <Radio value={2}>Từ chối</Radio>
+                        <Radio value={0}>{t("ot.statusWait")}</Radio>
+                        <Radio value={1}>{t("ot.statusValue.approved")}</Radio>
+                        <Radio value={2}>{t("ot.statusRejected")}</Radio>
                     </Radio.Group>
                 </Form.Item>
             </Form>

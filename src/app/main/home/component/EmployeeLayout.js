@@ -3,6 +3,7 @@ import { Table, Tag, Spin, Row, Col, Button, Input, AutoComplete, Tooltip, Pagin
 import { CalendarOutlined, PlusOutlined, SearchOutlined, EyeOutlined} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import AddEditEmployee from './AddEditEmployee';
+import { useTranslation } from "react-i18next";
 
 const EmployeeLayout = ({
     loading,
@@ -22,20 +23,25 @@ const EmployeeLayout = ({
     onSearch,
     onSearchTermChange
 }) => {
+    const { t } = useTranslation();
 
     const columns = useMemo ( 
         () => [
-            { title: 'MNV', dataIndex: 'employeesCode', key: 'employeesCode' },
-            { title: 'Họ tên', dataIndex: 'fullName', key: 'fullName' },
-            { title: 'username', dataIndex: 'username', key: 'username' },
+            { title: t("employee.columns.code"), dataIndex: 'employeesCode', key: 'employeesCode' },
+            { title: t("employee.columns.fullName"), dataIndex: 'fullName', key: 'fullName' },
+            { title: t("employee.columns.username"), dataIndex: 'username', key: 'username' },
             {
-                title: "Giới tính",
+                title: t("employee.columns.gender"),
                 dataIndex: "gender",
                 render: (gender) =>
-                gender === 1 ? "Nam" : gender === 0 ? "Nữ" : "—",
+                gender === 1
+                    ? t("employee.genderValue.male")
+                    : gender === 0
+                        ? t("employee.genderValue.female")
+                        : t("employee.genderValue.unknown"),
             },
             {
-                title: "Ngày sinh",
+                title: t("employee.columns.birthday"),
                 dataIndex: "birthday",
                 render: (value) =>
                     value ? (
@@ -44,11 +50,11 @@ const EmployeeLayout = ({
                             {dayjs(value).format("DD/MM/YYYY")}
                         </span>
                 ) : (
-                    "—"
+                    t("employee.genderValue.unknown")
                 ),
             },
             { 
-                title: 'Thời gian công tác',
+                title: t("employee.columns.workTime"),
                 key: 'time',
                 render: (_, record) => {
                     const start = record.startDate ? dayjs(record.startDate).format('DD/MM/YYYY') : '';
@@ -57,38 +63,38 @@ const EmployeeLayout = ({
                 }
             },
             {
-                title: "Chức vụ",
+                title: t("employee.columns.position"),
                 dataIndex: "positionName",
                 key: "positionName",
             },
             {
-                title: "Phòng ban",
+                title: t("employee.columns.department"),
                 dataIndex: "departmentName",
                 key: "departmentName",
             },
             {
-                title: "Trạng thái",
+                title: t("employee.columns.status"),
                 dataIndex: "status",
                 align: "center",
                 render: (status) => {
                     switch (status) {
                         case 1:
-                            return <Tag color="green">Đang làm việc</Tag>;
+                            return <Tag color="green">{t("employee.statusValue.working")}</Tag>;
                         case 2:
-                            return <Tag color="green">Nghỉ việc</Tag>;
+                            return <Tag color="green">{t("employee.statusValue.quit")}</Tag>;
                         case 3:
-                            return <Tag>Thử việc</Tag>;
+                            return <Tag>{t("employee.statusValue.probation")}</Tag>;
                         default:
-                            return "—";
+                            return t("employee.statusValue.unknown");
                     }
                 },
             },
             {
-                title: "Thao tác",
+                title: t("employee.columns.actions"),
                 key: "action",
                 align: "center",
                 render: (_, record) => (
-                    <Tooltip title="Xem chi tiết">
+                    <Tooltip title={t("employee.viewDetail")}>
                         <EyeOutlined
                             style={{ cursor: "pointer", color: "#1677ff" }}
                             onClick={() => onRowClick && onRowClick(record)}
@@ -96,7 +102,7 @@ const EmployeeLayout = ({
                     </Tooltip>
                 ),
             }
-        ], []
+        ], [t, onRowClick]
     );
 
     const autoCompleteOptions =
@@ -120,9 +126,9 @@ const EmployeeLayout = ({
         <Row className="dashboard-page page-base">
             <Col span={24}>
                 <div className='dashboard-title'>
-                    <h2>Danh sách nhân viên</h2>
+                    <h2>{t("employee.listTitle")}</h2>
                     <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleOpenAdd}>
-                        Thêm mới
+                        {t("employee.addNew")}
                     </Button>
                 </div>
             </Col>
@@ -137,7 +143,7 @@ const EmployeeLayout = ({
                             options={autoCompleteOptions}
                         >
                             <Input
-                                placeholder="Tìm kiếm theo tên, mã công nhân, công ty..."
+                                placeholder={t("employee.searchPlaceholder")}
                                 value={searchTerm}
                                 onChange={(e) => onSearchTermChange(e.target.value)}
                                 onKeyDown={(e) => {
@@ -171,7 +177,7 @@ const EmployeeLayout = ({
                     </div>
                 ) : !dataList || dataList.length === 0 ? (
                     <div className="dashboard-table-not-found">
-                        Không có dữ liệu nhân viên nào.
+                        {t("employee.noData")}
                     </div>
                 ) : (
                     <div>
@@ -208,7 +214,7 @@ const EmployeeLayout = ({
                         >
                             {/* BÊN TRÁI */}
                             <div>
-                                Tổng nhân viên : {totalElement}
+                                {t("employee.totalEmployees", { count: totalElement })}
                             </div>
 
                             {/* BÊN PHẢI */}

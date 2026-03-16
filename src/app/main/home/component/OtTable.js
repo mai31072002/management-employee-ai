@@ -6,9 +6,11 @@ import dayjs from 'dayjs';
 import AddEditOT from './AddEditOT';
 import { notificationPopup } from 'app/helpers/common';
 import * as Actions from "../store/actions";
+import { useTranslation } from "react-i18next";
 
 const OtTable = ({ employee }) => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [addEditOtModal, setAddEditOtModal] = useState(false);
     const [selectOtDay, setSelectOtDay] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
@@ -23,67 +25,71 @@ const OtTable = ({ employee }) => {
             { 
                 width: 200,
                 key: 'jobTitle',
-                title: 'Tên công việc', 
+                title: t("ot.columns.jobTitle"), 
                 dataIndex: 'jobTitle' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'workDate',
-                title: 'Ngày', 
+                title: t("ot.columns.workDate"), 
                 dataIndex: 'workDate' 
             },
             { 
                 width: 100,
                 align: "center",
                 key: 'otMinutes',
-                title: 'Số giờ OT', 
+                title: t("ot.columns.otMinutes"), 
                 dataIndex: 'otMinutes' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'startTime',
-                title: 'Giờ bắt đầu', 
+                title: t("ot.columns.startTime"), 
                 dataIndex: 'startTime' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'endTime',
-                title: 'Giờ kết thúc', 
+                title: t("ot.columns.endTime"), 
                 dataIndex: 'endTime' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'approvedBy',
-                title: 'Người duyệt', 
+                title: t("ot.columns.approvedBy"), 
                 dataIndex: 'approvedBy' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'approvedAt',
-                title: 'Thời gian duyệt', 
+                title: t("ot.columns.approvedAt"), 
                 dataIndex: 'approvedAt' 
             },
             { 
                 width: 70,
                 align: "center",
                 key: 'otRate',
-                title: 'Hệ số', 
+                title: t("ot.columns.otRate"), 
                 dataIndex: 'otRate' 
             },
             { 
                 width: 100,
                 align: "center",
                 key: 'status',
-                title: 'Tình trạng', 
+                title: t("ot.columns.status"), 
                 dataIndex: 'status',
                 render: (status) => (
                     <Tag color={status === 1 ? "green" : status === 2 ? "red" : "default"}>
-                        {status === 1 ? "Đã duyệt" : status === 2 ? "Không duyệt" : "Chưa duyệt"}
+                        {status === 1
+                            ? t("ot.statusValue.approved")
+                            : status === 2
+                                ? t("ot.statusValue.rejected")
+                                : t("ot.statusValue.pending")}
                     </Tag>
                 ),
             },
@@ -91,15 +97,21 @@ const OtTable = ({ employee }) => {
                 width: 100,
                 align: "center",
                 key: 'otType',
-                title: 'Loại OT', 
+                title: t("ot.columns.otType"), 
                 dataIndex: 'otType',
                 render: (otType) => (
                     <Tag>
-                        {otType === 1 ? "Đêm" : otType === 2 ? "Lễ" : otType === 0 ? "thường" : ''}
+                        {otType === 1
+                            ? t("ot.typeValue.night")
+                            : otType === 2
+                                ? t("ot.typeValue.holiday")
+                                : otType === 0
+                                    ? t("ot.typeValue.normal")
+                                    : ""}
                     </Tag>
                 ),
             },
-        ], []
+        ], [t]
     );
 
     // ---------------------------------
@@ -177,7 +189,7 @@ const OtTable = ({ employee }) => {
                 />
 
                 <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleOpenAdd}>  
-                    Thêm Ot
+                    {t("ot.addOt")}
                 </Button>
             </div>
             <Table

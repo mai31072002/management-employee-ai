@@ -6,12 +6,14 @@ const domain =
 const baseURL = `${domain}/api/`;
 const accessTokenKey = "jwt_access_token";
 const refreshTokenKey = "jwt_refresh_token";
+const languageKey = "app_language";
 
 
 const apiConfig = {
   baseURL,
   accessTokenKey,
   refreshTokenKey,
+  languageKey,
 };
 
 export default apiConfig;

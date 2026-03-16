@@ -43,6 +43,15 @@ const login = (state = initialState, action) => {
             success: false,
             error: action.payload,
             isLoading: false,
+            login: {
+                isLoading: false,
+                data: action.payload,
+                status: action.payload.status,
+            },
+            forgotPass: {
+                status: null,
+                message: "",
+            }
         };
     case Actions.AUTH_RESET:
         return {

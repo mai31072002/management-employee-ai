@@ -10,11 +10,13 @@ import EditAccountForm from "./component/EditAccount";
 import withReducer from 'app/store/with_reducer';
 import reduce from "../home/store/reducers";
 import { fetchEmployeeDetail } from "app/auth/store/actions/auth.action";
+import { useTranslation } from "react-i18next";
 
 import "./index.scss";
 
 const Account = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEditAccountOpen, setIsEditAccountOpen] = useState(false);
 
@@ -69,27 +71,27 @@ const Account = () => {
             <Row gutter={[16, 16]}>
                 <Col span={24}>
                     <Card
-                        title="Thông tin tài khoản"
+                        title={t("account.accountInfo")}
                         extra={
                             <Button type="primary" onClick={() => setIsEditAccountOpen(true)}>
-                                Chỉnh sửa
+                                {t("account.edit")}
                             </Button>
                         }
                     >
                         <Descriptions bordered column={2}>
-                            <Descriptions.Item label="Username">
+                            <Descriptions.Item label={t("userRole.username")}>
                                 {account.username}
                             </Descriptions.Item>
 
-                            <Descriptions.Item label="Email">
+                            <Descriptions.Item label={t("userRole.email")}>
                                 {account.email}
                             </Descriptions.Item>
                             
-                            <Descriptions.Item label="Họ tên">
+                            <Descriptions.Item label={t("employee.columns.fullName")}>
                                 {account.firstName} {account.lastName}
                             </Descriptions.Item>
                             
-                            <Descriptions.Item label="Roles">
+                            <Descriptions.Item label={t("userRole.roles")}>
                                 {account.roles.map(r => (
                                     <Tag key={r}>{r}</Tag>
                                 ))}
@@ -101,10 +103,10 @@ const Account = () => {
                 {employee && (
                     <Col span={24}>
                         <Card
-                            title="Thông tin nhân sự"
+                            title={t("account.employeeInfo")}
                             extra={
                                 <Button onClick={() => setIsModalVisible(true)}>
-                                    Chỉnh sửa
+                                    {t("account.edit")}
                                 </Button>
                             }
                         >
@@ -125,7 +127,7 @@ const Account = () => {
                     
                                     <div style={{ marginTop: 6 }}>
                                         <Tag color="blue" style={{ marginTop: 8 }}>
-                                            {employee?.positionName || 'Chưa có chức vụ'} - {employee.departmentName || 'Chưa có phòng ban'}
+                                            {employee?.positionName || t("account.noPosition")} - {employee.departmentName || t("account.noDepartment")}
                                         </Tag>
                                     </div>
                                 </Col>
@@ -133,39 +135,42 @@ const Account = () => {
                                 {/* Info */}
                                 <Col span={24} md={18}>
                                     <Row gutter={[16, 16]}>
-                                        <Item label="Mã NV" value={employee.employeesCode} />
-                                        <Item label="Username" value={employee.username} />
-                                        <Item label="Ngày sinh" value={dayjs(employee.birthday).format('DD/MM/YYYY')} />
-                                        <Item label="Giới tính" value={employee.gender === 1 ? 'Nam' : 'Nữ'} />
-                                        <Item label="SĐT" value={employee.phone} />
-                                        <Item label="Email" value={employee.email} span={24} />
-                                        <Item label="Quản lý" value={employee.manages} />
+                                        <Item label={t("account.employeeCode")} value={employee.employeesCode} />
+                                        <Item label={t("userRole.username")} value={employee.username} />
+                                        <Item label={t("account.birthday")} value={dayjs(employee.birthday).format('DD/MM/YYYY')} />
+                                        <Item
+                                            label={t("account.gender")}
+                                            value={employee.gender === 1 ? t("employee.genderValue.male") : t("employee.genderValue.female")}
+                                        />
+                                        <Item label={t("account.phone")} value={employee.phone} />
+                                        <Item label={t("userRole.email")} value={employee.email} span={24} />
+                                        <Item label={t("account.manager")} value={employee.manages} />
                     
                                         <Item
-                                            label="Thời gian công tác"
+                                            label={t("account.workTime")}
                                             span={24}
                                             value={
                                             employee.startDate
                                                 ? `${dayjs(employee.startDate).format('DD/MM/YYYY')} → ${
                                                     employee.endDate
                                                     ? dayjs(employee.endDate).format('DD/MM/YYYY')
-                                                    : 'Hiện tại'
+                                                    : t("account.present")
                                                 }`
                                                 : '—'
                                             }
                                         />
                     
                                         <Item
-                                            label="Địa chỉ"
+                                            label={t("account.address")}
                                             span={24}
                                             value={`${employee.address}, ${employee.district}, ${employee.province}`}
                                         />
                     
                                         <Item
-                                            label="Trạng thái"
+                                            label={t("account.status")}
                                             value={
                                                 <Tag color={employee.status === 1 ? 'green' : 'red'}>
-                                                    {employee.status === 1 ? 'Đang làm việc' : 'Ngừng làm việc'}
+                                                    {employee.status === 1 ? t("account.working") : t("account.stopped")}
                                                 </Tag>
                                             }
                                         />

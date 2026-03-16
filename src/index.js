@@ -7,6 +7,7 @@ import AuthConfig from './app/main/auth/auth.config';
 import dayjs from "dayjs";
 import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
+import "app/i18n/i18n.config";
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);

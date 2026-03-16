@@ -8,14 +8,16 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AddEditLeverModal from "./component/AddEditLever";
 import { notificationPopup } from "app/helpers/common";
 import './index.scss';
+import { useTranslation } from "react-i18next";
 
 const LeverManagement = () => {
     const dispatch = useDispatch();
-    const [page, setPage] = useState(1);
+    const { t } = useTranslation();
+    // const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
     const [openAddLever, setOpenAddLever] = useState(false);
-    const [openEdit, setOpenEdit] = useState(false);
+    // const [openEdit, setOpenEdit] = useState(false);
     const [editingLever, setEditingLever] = useState(null);
     // const [searchTerm, setSearchTerm] = useState("");
     // const [isSearching, setIsSearching] = useState(false);
@@ -48,7 +50,7 @@ const LeverManagement = () => {
     }, [checkDataList, dispatch]);
 
     useEffect(() => {
-        if (createUpdateLever != null && createUpdateLever.length != 0) {
+        if (createUpdateLever !== null && createUpdateLever.length !== 0) {
             notificationPopup(
                 createUpdateLever.status,
                 createUpdateLever.message
@@ -58,8 +60,6 @@ const LeverManagement = () => {
 
     // ===== HANDLE SAVE =====
     const handleSubmit = async (values) => {
-        console.log("values submit", values);
-        
         if (editingLever) {
             await dispatch(Actions.updateLever(editingLever.id, values));
         } else {
@@ -96,15 +96,15 @@ const LeverManagement = () => {
             if (res.status === 200) {
                 message.success(
                 res.message ||
-                    `Đã xóa ${leverNumber}`
+                    t("lever.deleteSuccess", { name: leverNumber })
                 );
             } else {
-                message.error(res.message || "Lỗi khi xóa Lever!");
+                message.error(res.message || t("lever.deleteError"));
             }
 
             setCheckDataList(true);
         } catch {
-            message.error("Lỗi khi xóa Lever!");
+            message.error(t("lever.deleteError"));
         }
     };
 
@@ -126,30 +126,30 @@ const LeverManagement = () => {
     // ===== TABLE COLUMNS =====
     const columns = [
         {
-            title: "Chức vụ",
+            title: t("lever.number"),
             dataIndex: "leverNumber",
             key: "leverNumber",
         },
         {
-            title: "Mô tả chi tiết",
+            title: t("lever.description"),
             dataIndex: "description",
             key: "description",
         },
         {
-            title: "Actions",
+            title: t("common.actions"),
             key: "actions",
             align: "center",
             render: (record) => {
                 return (
                     <Space>
-                        <Tooltip title="Cập nhật">
+                        <Tooltip title={t("common.update")}>
                             <Button
                                 type="text"
                                 icon={<EditOutlined style={{ color: "#1677ff" }} />}
                                 onClick={() => handleUpdate(record)}
                             />
                         </Tooltip>
-                        <Tooltip title="Xóa">
+                        <Tooltip title={t("common.delete")}>
                             <Button
                                 type="text"
                                 icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -165,9 +165,9 @@ const LeverManagement = () => {
     return (
         <Row className="lever-page  page-base">
             <Col span="24" className="lever-top">
-                <h2 className="lever-title">Quản lý chức vụ</h2>
+                <h2 className="lever-title">{t("lever.title")}</h2>
                 <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleAdd}>
-                    Thêm chức vụ
+                    {t("lever.add")}
                 </Button>
             </Col>
             <Col span="24" className="">

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 const AddEditLeverModal = ({
     open,
@@ -8,6 +9,7 @@ const AddEditLeverModal = ({
     onSubmit
 }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && lever) {
@@ -28,7 +30,7 @@ const AddEditLeverModal = ({
     return (
         <Modal
             open={open}
-            title={lever ? "Cập nhật chức vụ" : "Thêm chức vụ"}
+            title={lever ? t("lever.modalEditTitle") : t("lever.modalAddTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -39,20 +41,20 @@ const AddEditLeverModal = ({
                 onFinish={handleFinish}
             >
                 <Form.Item
-                    label="Cấp bậc"
+                    label={t("lever.number")}
                     name="leverNumber"
                     rules={[
-                        { required: true, message: "Vui lòng nhập cấp bặc" }
+                        { required: true, message: t("lever.validationNumberRequired") }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label="Mô tả về cấp bặc"
+                    label={t("lever.description")}
                     name="description"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mô tả cấp bặc" }
+                        { required: true, message: t("lever.validationDescRequired") }
                     ]}
                 >
                     <Input />
@@ -60,10 +62,10 @@ const AddEditLeverModal = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Lưu
+                        {t("common.save")}
                     </Button>
                 </Form.Item>
             </Form>

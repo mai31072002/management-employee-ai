@@ -6,9 +6,11 @@ import withReducer from 'app/store/with_reducer';
 import reduce from "../home/store/reducers";
 import * as Actions from "../home/store/actions";
 import "./index.scss";
+import { useTranslation } from "react-i18next";
 
 const OtTable = () => {
     const { RangePicker } = DatePicker;
+    const { t } = useTranslation();
 
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
@@ -26,73 +28,77 @@ const OtTable = () => {
             { 
                 width: 200,
                 key: 'fullName',
-                title: 'Họ tên', 
+                title: t("rewardPenalty.fullName"), 
                 dataIndex: 'fullName' 
             },
             { 
                 width: 200,
                 key: 'jobTitle',
-                title: 'Tên công việc', 
+                title: t("ot.columns.jobTitle"), 
                 dataIndex: 'jobTitle' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'workDate',
-                title: 'Ngày', 
+                title: t("ot.columns.workDate"), 
                 dataIndex: 'workDate' 
             },
             { 
                 width: 100,
                 align: "center",
                 key: 'otMinutes',
-                title: 'Số giờ OT', 
+                title: t("ot.columns.otMinutes"), 
                 dataIndex: 'otMinutes' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'startTime',
-                title: 'Giờ bắt đầu', 
+                title: t("ot.columns.startTime"), 
                 dataIndex: 'startTime' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'endTime',
-                title: 'Giờ kết thúc', 
+                title: t("ot.columns.endTime"), 
                 dataIndex: 'endTime' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'approvedBy',
-                title: 'Người duyệt', 
+                title: t("ot.columns.approvedBy"), 
                 dataIndex: 'approvedBy' 
             },
             { 
                 width: 150,
                 align: "center",
                 key: 'approvedAt',
-                title: 'Thời gian duyệt', 
+                title: t("ot.columns.approvedAt"), 
                 dataIndex: 'approvedAt' 
             },
             { 
                 width: 70,
                 align: "center",
                 key: 'otRate',
-                title: 'Hệ số', 
+                title: t("ot.columns.otRate"), 
                 dataIndex: 'otRate' 
             },
             { 
                 width: 100,
                 align: "center",
                 key: 'status',
-                title: 'Tình trạng', 
+                title: t("ot.columns.status"), 
                 dataIndex: 'status',
                 render: (status) => (
                     <Tag color={status === 1 ? "green" : status === 2 ? "red" : "default"}>
-                        {status === 1 ? "Đã duyệt" : status === 2 ? "Không duyệt" : "Chưa duyệt"}
+                        {status === 1
+                            ? t("ot.statusValue.approved")
+                            : status === 2
+                                ? t("ot.statusValue.rejected")
+                                : t("ot.statusValue.pending")}
                     </Tag>
                 ),
             },
@@ -100,15 +106,21 @@ const OtTable = () => {
                 width: 100,
                 align: "center",
                 key: 'otType',
-                title: 'Loại OT', 
+                title: t("ot.columns.otType"), 
                 dataIndex: 'otType',
                 render: (otType) => (
                     <Tag>
-                        {otType === 1 ? "Đêm" : otType === 2 ? "Lễ" : otType === 0 ? "thường" : ''}
+                        {otType === 1
+                            ? t("ot.typeValue.night")
+                            : otType === 2
+                                ? t("ot.typeValue.holiday")
+                                : otType === 0
+                                    ? t("ot.typeValue.normal")
+                                    : ''}
                     </Tag>
                 ),
             },
-        ], []
+        ], [t]
     );
 
     // ---------------------------------
@@ -121,7 +133,7 @@ const OtTable = () => {
             const to = toDate ? toDate.format("YYYY-MM-DD") : null;
             dispatch(Actions.fetchListOtDate(0, 10, from, to, status));
         }
-    }, [dispatch, fromDate, toDate]);
+    }, [dispatch, fromDate, toDate, status]);
 
     useEffect(() => {
         if (checkDataList) {
@@ -179,10 +191,10 @@ const OtTable = () => {
                     style={{ width: 120 }}
                     onChange={handleChange}
                     options={[
-                        { value: '', label: 'Tât cả' },
-                        { value: '0', label: 'Chưa duyệt' },
-                        { value: '1', label: 'Đã duyệt' },
-                        { value: '2', label: 'Không được duyệt' },
+                        { value: '', label: t("common.all") },
+                        { value: '0', label: t("ot.statusValue.pending") },
+                        { value: '1', label: t("ot.statusValue.approved") },
+                        { value: '2', label: t("ot.statusValue.rejected") },
                     ]}
                 />
             </div>
@@ -196,7 +208,7 @@ const OtTable = () => {
                     pageSize: otDate?.limit,
                     total: otDate?.totalElement,
                     showSizeChanger: true,
-                    showTotal: () => `Tổng ${otDate?.totalElement} nhân viên`,
+                    showTotal: () => t("ot.totalEmployees", { count: otDate?.totalElement ?? 0 }),
                     onChange: handlePageChange,
                     onShowSizeChange: handlePageChange,
                 }}

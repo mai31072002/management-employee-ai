@@ -8,9 +8,11 @@ import EmployeeConfigModal from './component/EmployeeConfigModal';
 import { notificationPopup } from "app/helpers/common";
 import EmployeeLayout from './component/EmployeeLayout';
 import './index.scss'
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
     const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -115,15 +117,15 @@ const Dashboard = () => {
             if (res.status === 200) {
                 message.success(
                 res.message ||
-                    `Đã xóa ${fullName} và toàn bộ dữ liệu liên quan.`
+                    t("employee.deleteSuccess", { name: fullName })
                 );
             } else {
-                message.error(res.message || "Lỗi khi xóa ứng viên");
+                message.error(res.message || t("employee.deleteError"));
             }
 
             setCheckDataList(true);
         } catch {
-            message.error("Lỗi khi xóa ứng viên!");
+            message.error(t("employee.deleteError"));
         }
     };
 
@@ -165,7 +167,7 @@ const Dashboard = () => {
         }
         setIsSearching(true);
         dispatch(Actions.fetchSearchEmployee(trimmed, 0, 10)).catch(() => {
-            message.error("Không thể tìm kiếm ứng viên");
+            message.error(t("employee.searchError"));
         });
     };
 

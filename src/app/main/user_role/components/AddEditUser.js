@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Select, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 const { Option } = Select;
 
@@ -11,6 +12,7 @@ const EditUserModal = ({
     roleOptions
 }) => {
     const [form] = Form.useForm();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open && user) {
@@ -23,8 +25,6 @@ const EditUserModal = ({
     }, [open, user, form]);
 
     const handleFinish = (values) => {
-        console.log("values: ", values);
-        
         onSubmit({
             userId: user.userId,
             username: values.username,
@@ -36,7 +36,7 @@ const EditUserModal = ({
     return (
         <Modal
             open={open}
-            title="Chỉnh sửa thông tin người dùng"
+            title={t("user.editTitle")}
             onCancel={onCancel}
             footer={null}
             destroyOnHidden
@@ -51,11 +51,11 @@ const EditUserModal = ({
                 </Form.Item>
 
                 <Form.Item
-                    label="Email"
+                    label={t("auth.email")}
                     name="email"
                     rules={[
-                        { required: true, message: "Vui lòng nhập email" },
-                        { type: "email", message: "Email không hợp lệ" }
+                        { required: true, message: t("user.validationEmailRequired") },
+                        { type: "email", message: t("user.validationEmailInvalid") }
                     ]}
                 >
                     <Input />
@@ -64,7 +64,7 @@ const EditUserModal = ({
                 <Form.Item
                     label="Roles"
                     name="roles"
-                    rules={[{ required: true, message: "Chọn ít nhất 1 role" }]}
+                    rules={[{ required: true, message: t("user.validationRolesRequired") }]}
                 >
                     <Select mode="multiple">
                         {roleOptions.map(role => (
@@ -77,10 +77,10 @@ const EditUserModal = ({
 
                 <Form.Item style={{ textAlign: "right" }}>
                     <Button onClick={onCancel} style={{ marginRight: 8 }}>
-                        Hủy
+                        {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        Lưu
+                        {t("common.save")}
                     </Button>
                 </Form.Item>
             </Form>
