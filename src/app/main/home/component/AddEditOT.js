@@ -18,7 +18,7 @@ const AddEditOT = ({
         if (otDay) {
             form.setFieldsValue({
                 ...otDay,
-                employeeId: otDay.employeeId ?? employee.employeeId,
+                userId: otDay.userId ?? employee.userId,
                 workDate: otDay.workDate ? dayjs(otDay.workDate) : null,
                 startTime: otDay.startTime ? dayjs(otDay.startTime, "HH:mm") : null,
                 endTime: otDay.endTime ? dayjs(otDay.endTime, "HH:mm") : null,
@@ -28,8 +28,8 @@ const AddEditOT = ({
         } else {
             form.resetFields();
             form.setFieldsValue({
-                fullName: employee.fullName || "",
-                employeeId: employee.employeeId,
+                fullName: employee?.employee?.fullName || "",
+                userId: employee?.userId,
             });
         }
     }, [otDay, form, employee]);
@@ -84,11 +84,14 @@ const AddEditOT = ({
                     otRate: 1.5,
                 }}
             >
-                <Form.Item name="employeeId" hidden>
+                <Form.Item name="userId" hidden>
                     <Input />
                 </Form.Item>
                 {/* Employee */}
-                <Form.Item name="fullName" label={t("ot.employeeName")}>
+                <Form.Item 
+                    name="fullName" 
+                    label={t("ot.employeeName")}
+                >
                     <Input disabled />
                 </Form.Item>
 

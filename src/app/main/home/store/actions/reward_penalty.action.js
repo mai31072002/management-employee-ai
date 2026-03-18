@@ -45,26 +45,28 @@ export const fetchRewardPenaltyByEmployee = (id, fromDate, toDate, type) => asyn
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/reward-penalty/${id}?fromDate=${fromDate}&toDate=${toDate}&type=${type}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_REWARD_PENALTY_BY_EMPLOYEE_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/reward-penalty/${id}?fromDate=${fromDate}&toDate=${toDate}&type=${type}`);
-
-                dispatch({
-                    type: LIST_REWARD_PENALTY_BY_EMPLOYEE_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_REWARD_PENALTY_BY_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_REWARD_PENALTY_BY_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_REWARD_PENALTY_BY_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -102,36 +104,35 @@ export const createRewardPenalty = (data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/reward-penalty`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_REWARD_PENALTY, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/reward-penalty`, data);
-
-                dispatch({
-                    type: CREATE_REWARD_PENALTY, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_REWARD_PENALTY_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_REWARD_PENALTY_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: CREATE_REWARD_PENALTY_ERROR, payload: error});
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: CREATE_REWARD_PENALTY_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
     }
 };
 
@@ -159,36 +160,35 @@ export const UpdateRewardPenalty = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/reward-penalty/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_REWARD_PENALTY, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/reward-penalty/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_REWARD_PENALTY, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_REWARD_PENALTY_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_REWARD_PENALTY_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: UPDATE_REWARD_PENALTY_ERROR, payload: error});
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: UPDATE_REWARD_PENALTY_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
     }
 };
 
@@ -215,35 +215,34 @@ export const DeleteRewardPenalty = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.delete(`/reward-penalty/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: DELETE_REWARD_PENALTY, 
+                        payload: res.data
+                    });
 
-                const res = await axios.delete(`/reward-penalty/${id}`);
-
-                dispatch({
-                    type: DELETE_REWARD_PENALTY, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: DELETE_REWARD_PENALTY_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: DELETE_REWARD_PENALTY_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: DELETE_REWARD_PENALTY_ERROR, payload: error}); 
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: DELETE_REWARD_PENALTY_ERROR, 
-                payload: error
-            });
-
-            throw error;
         }
-    }
-};
+    };

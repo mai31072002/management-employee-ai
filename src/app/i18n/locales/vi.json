@@ -134,6 +134,23 @@
       "managerRequired": "Vui lòng nhập người quản lý",
       "description": "Mô tả",
       "status": "Trạng thái"
+    },
+    "importExcel": {
+      "title": "Nhập Excel",
+      "description": "Nhập dữ liệu nhân viên từ file Excel",
+      "importButton": "Gửi",
+      "dragText": "Kéo và thả file Excel vào đây, hoặc click để chọn",
+      "hint": "Định dạng hỗ trợ: .xlsx, .xls",
+      "step1": "Tải mẫu file",
+      "step2": "Điền dữ liệu theo mẫu",
+      "step3": "Tải file đã điền",
+      "step4": "Click 'Gửi' để nhập",
+      "instructions": "Hướng dẫn nhập"
+    },
+    "downloadTemplate": {
+      "title": "Tải mẫu",
+      "success": "Tải mẫu thành công",
+      "error": "Tải mẫu thất bại"
     }
   },
   "ot": {

@@ -5,8 +5,9 @@ import * as Actions from "./store/actions";
 import reduce from "./store/reducers";
 import withReducer from 'app/store/with_reducer';
 import EmployeeConfigModal from './component/EmployeeConfigModal';
-import { notificationPopup } from "app/helpers/common";
 import EmployeeLayout from './component/EmployeeLayout';
+import ImportExcelModal from './component/ImportExcelModal';
+import { notificationPopup } from "app/helpers/common";
 import './index.scss'
 import { useTranslation } from "react-i18next";
 
@@ -23,6 +24,10 @@ const Dashboard = () => {
     const [selectRecord, setSelectRecord] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [isSearching, setIsSearching] = useState(false);
+    
+    // New states for import functionality
+    const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+    const [importLoading, setImportLoading] = useState(false);
 
     const { 
         loading, 
@@ -138,9 +143,11 @@ const Dashboard = () => {
     };
 
     const openDetail = (record) => {
-        const mapped = mapRecordToEmployeeDetail(record);
+        // console.log("record", record);
+        
+        // const mapped = mapRecordToEmployeeDetail(record);
         setOpenEmployeeDetail(true);
-        setSelectEmployee(mapped);
+        setSelectEmployee(record);
         setSelectRecord(record);
     }
 
@@ -172,33 +179,67 @@ const Dashboard = () => {
     };
 
     // ---------------------------------
+    // IMPORT HANDLERS
+    // ---------------------------------
+    const handleOpenImport = () => {
+        setIsImportModalVisible(true);
+    };
+
+    const handleCloseImport = () => {
+        setIsImportModalVisible(false);
+    };
+
+    const handleImportExcel = async (formData, onProgress) => {
+        setImportLoading(true);
+        try {
+            await dispatch(Actions.importExcel(formData, onProgress));
+            message.success(t("employee.import.success"));
+            handleCloseImport();
+            setCheckDataList(true); // Refresh list
+        } catch (error) {
+            message.error(error.message || t("employee.import.error"));
+        } finally {
+            setImportLoading(false);
+        }
+    };
+
+    const handleDownloadTemplate = async () => {
+        try {
+            await dispatch(Actions.downloadTemplate());
+            // message.success(t("employee.downloadTemplate.success"));
+        } catch (error) {
+            message.error(t("employee.downloadTemplate.error"));
+        }
+    };
+
+    // ---------------------------------
     // HELPER
     // ---------------------------------
-    const mapRecordToEmployeeDetail = (record) => ({
-        employeeId: String(record.employeeId),
-        firstName: record.firstName ?? "",
-        lastName: record.lastName ?? "",
-        fullName: record.fullName ?? "",
-        username: record.username ?? "",
-        province: record.province ?? "",
-        district: record.district ?? "",
-        address: record.address ?? "",
-        gender: record.gender ?? "",
-        birthday: record.birthday ?? "",
-        email: record.email ?? "",
-        phone: record.phone ?? "",
-        cccd: record.cccd ?? "",
-        description: record.description ?? "",
-        startDate: record.startDate ?? "",
-        endDate: record.endDate ?? "",
-        status: record.status ?? "",
-        department: record.departmentName ?? "",
-        employeesCode: record.employeesCode ?? "",
-        baseSalary: record.baseSalary ?? "",
-        allowance: record.allowance ?? "",
-        manages: record.manages ?? "",
-        position: record.positionName,
-    });
+    // const mapRecordToEmployeeDetail = (record) => ({
+    //     employeeId: String(record.employeeId),
+    //     firstName: record.firstName ?? "",
+    //     lastName: record.lastName ?? "",
+    //     fullName: record.fullName ?? "",
+    //     username: record.username ?? "",
+    //     province: record.province ?? "",
+    //     district: record.district ?? "",
+    //     address: record.address ?? "",
+    //     gender: record.gender ?? "",
+    //     birthday: record.birthday ?? "",
+    //     email: record.email ?? "",
+    //     phone: record.phone ?? "",
+    //     cccd: record.cccd ?? "",
+    //     description: record.description ?? "",
+    //     startDate: record.startDate ?? "",
+    //     endDate: record.endDate ?? "",
+    //     status: record.status ?? "",
+    //     department: record.departmentName ?? "",
+    //     employeesCode: record.employeesCode ?? "",
+    //     baseSalary: record.baseSalary ?? "",
+    //     allowance: record.allowance ?? "",
+    //     manages: record.manages ?? "",
+    //     position: record.positionName,
+    // });
 
     return (
         <>
@@ -220,6 +261,11 @@ const Dashboard = () => {
                 onSearch={handleSearch}
                 searchTerm={searchTerm}
                 onSearchTermChange={setSearchTerm}
+                // Import props
+                handleOpenImport={handleOpenImport}
+                handleImportExcel={handleImportExcel}
+                handleDownloadTemplate={handleDownloadTemplate}
+                importLoading={importLoading}
             />
 
             <EmployeeConfigModal 
@@ -229,26 +275,15 @@ const Dashboard = () => {
                 onEdit={handleEditFromDetail}
                 onDelete={handleDeleteFromDetail}
             />
+
+            <ImportExcelModal
+                open={isImportModalVisible}
+                onCancel={handleCloseImport}
+                onImport={handleImportExcel}
+                onDownloadTemplate={handleDownloadTemplate}
+                loading={importLoading}
+            />
         </>
     );
 }
 export default withReducer('dashboard', reduce)(Dashboard);
-
-// import { useContext } from "react";
-// import { ThemeContext } from "../../layout/home_theme_provider";
-
-// function Home() {
-//   const { setTheme } = useContext(ThemeContext);
-
-//   const handleTheme = (bg, text) => {
-//     setTheme({ background: bg, text: text }); // sửa typo
-//   };
-
-//   return (
-    // <div>
-    //   <button onClick={() => handleTheme("#222", "#fff")}>Dark Mode</button>
-    //   <button onClick={() => handleTheme("#fff", "#000")}>Light Mode</button>
-    // </div>
-    // <div></div>
-//   );
-// }

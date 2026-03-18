@@ -35,6 +35,10 @@ const initialState = {
         status: null,
         message: "",
     },
+    importLoading: false,
+    importError: null,
+    downloadTemplateLoading: false,
+    downloadTemplateError: null,
 }
 
 const dashboardReducer = (state  = initialState, action) => {
@@ -50,18 +54,20 @@ const dashboardReducer = (state  = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                employleList: action.payload.data.data,
-                page: action.payload.data.pageableRep.page,
-                limit: action.payload.data.pageableRep.limit,
-                totalElement: action.payload.data.pageableRep.totalElements,
+                employleList: action.payload.data,
+                page: action.payload.pageableRep.page,
+                limit: action.payload.pageableRep.limit,
+                totalElement: action.payload.pageableRep.totalElements,
                 error: null,
-                // employeeCreateOrUpdate: action.payload,
             }
         case Action.LIST_EMPLOYEE_SEARCH_FETCHED:
             return {
                 ...state,
                 loading: false,
-                employleList: action.payload.data.data,
+                employleList: action.payload.data,
+                page: action.payload.pageableRep.page,
+                limit: action.payload.pageableRep.limit,
+                totalElement: action.payload.pageableRep.totalElements,
                 page: action.payload.data.pageableRep.page,
                 limit: action.payload.data.pageableRep.limit,
                 totalElement: action.payload.data.pageableRep.totalElements,
@@ -155,6 +161,47 @@ const dashboardReducer = (state  = initialState, action) => {
                     message: action.payload.message,
                 }
             }  
+        
+        // Import Excel cases
+        case Action.IMPORT_EXCEL_REQUEST:
+            return {
+                ...state,
+                importLoading: true,
+                importError: null,
+            }
+        case Action.IMPORT_EXCEL_SUCCESS:
+            return {
+                ...state,
+                importLoading: false,
+                importError: null,
+            }
+        case Action.IMPORT_EXCEL_FAILURE:
+            return {
+                ...state,
+                importLoading: false,
+                importError: action.payload,
+            }
+        
+        // Download Template cases
+        case Action.DOWNLOAD_TEMPLATE_REQUEST:
+            return {
+                ...state,
+                downloadTemplateLoading: true,
+                downloadTemplateError: null,
+            }
+        case Action.DOWNLOAD_TEMPLATE_SUCCESS:
+            return {
+                ...state,
+                downloadTemplateLoading: false,
+                downloadTemplateError: null,
+            }
+        case Action.DOWNLOAD_TEMPLATE_FAILURE:
+            return {
+                ...state,
+                downloadTemplateLoading: false,
+                downloadTemplateError: action.payload,
+            }
+        
         default:
             return state;
     }

@@ -122,30 +122,30 @@ const RewardPenalty = ({ employee }) => {
     // ---------------------------------
 
     useEffect(() => {
-        if (!employee?.employeeId) return;
+        if (!employee?.userId) return;
 
         dispatch(
             Actions.fetchRewardPenaltyByEmployee(
-                employee.employeeId,
+                employee.userId,
                 fromDate?.format("YYYY-MM-DD"),
                 toDate?.format("YYYY-MM-DD"),
                 type
             )
         );
-    }, [dispatch, employee?.employeeId, fromDate, toDate, type]);
+    }, [dispatch, employee?.userId, fromDate, toDate, type]);
 
     useEffect(() => {
         if (checkDataList) {
             dispatch(
                 Actions.fetchRewardPenaltyByEmployee(
-                    employee.employeeId,
+                    employee.userId,
                     fromDate.format("YYYY-MM-DD"),
                     toDate.format("YYYY-MM-DD"),
                     type
                 )
             );
         }
-    }, [dispatch, employee?.employeeId, checkDataList, fromDate, toDate, type]);
+    }, [dispatch, employee?.userId, checkDataList, fromDate, toDate, type]);
 
     // useEffect(() => {
     //     if(rewardPenaltyEmployeeId?.status != null) {

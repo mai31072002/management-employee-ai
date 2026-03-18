@@ -31,7 +31,7 @@ const AddEditRewardPenalty = ({ open, onCancel, onSubmit, employee, dataAddAndEd
             const values = await form.validateFields();
 
             const payload = {
-                employeeId: employee.employeeId,
+                userId: employee.userId,
                 month: values.month.format("YYYY-MM-DD"),
                 amount: values.amount,
                 reason: values.reason,

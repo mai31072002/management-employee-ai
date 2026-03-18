@@ -134,6 +134,23 @@
       "managerRequired": "Please input manager",
       "description": "Description",
       "status": "Status"
+    },
+    "importExcel": {
+      "title": "Import Excel",
+      "description": "Import employee data from Excel file",
+      "importButton": "submit",
+      "dragText": "Drag and drop Excel file here, or click to select",
+      "hint": "Supported formats: .xlsx, .xls",
+      "step1": "Download the template file",
+      "step2": "Fill in the data according to the template",
+      "step3": "Upload the completed file",
+      "step4": "Click 'Submit' to import",
+      "instructions": "Import instructions"
+    },
+    "downloadTemplate": {
+        "title": "Download template",
+        "success": "Template downloaded successfully",
+        "error": "Failed to download template"
     }
   },
   "ot": {

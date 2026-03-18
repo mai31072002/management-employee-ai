@@ -54,26 +54,28 @@ export const fetchListOtDateEmployeeId = (id, month) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/ot-date/${id}?month=${month}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: OT_DATE_EMPLOYEE_ID, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/ot-date/${id}?month=${month}`);
-
-                dispatch({
-                    type: OT_DATE_EMPLOYEE_ID, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: OT_DATE_EMPLOYEE_ID_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: OT_DATE_EMPLOYEE_ID_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: OT_DATE_EMPLOYEE_ID_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -111,26 +113,28 @@ export const fetchListOtDate = (page, limit, fromDate, toDate, status) => async 
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/ot-date?page=${page}&size=${limit}&fromDate=${fromDate}&toDate=${toDate}&status=${status}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: OT_DATE_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/ot-date?page=${page}&size=${limit}&fromDate=${fromDate}&toDate=${toDate}&status=${status}`);
-
-                dispatch({
-                    type: OT_DATE_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: OT_DATE_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: OT_DATE_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: OT_DATE_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -165,26 +169,28 @@ export const CreateOtDay = (data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/ot-date`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_OT_DATE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/ot_date`, data);
-
-                dispatch({
-                    type: CREATE_OT_DATE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: CREATE_OT_DATE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_OT_DATE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_OT_DATE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -222,26 +228,28 @@ export const UpdateOtDate = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/ot-date/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_OT_DATE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/ot-date/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_OT_DATE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: UPDATE_OT_DATE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_OT_DATE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_OT_DATE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -278,26 +286,28 @@ export const DeleteOtDate = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.delete(`/ot-date/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: DELETE_OT_DATE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.delete(`/ot-date/${id}`);
-
-                dispatch({
-                    type: DELETE_OT_DATE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: DELETE_OT_DATE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: DELETE_OT_DATE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: DELETE_OT_DATE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 

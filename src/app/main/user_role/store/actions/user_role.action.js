@@ -55,26 +55,28 @@ export const fetchListUser = (page, limit) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/users?page=${page}&size=${limit}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_USER_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/users?page=${page}&size=${limit}`);
-
-                dispatch({
-                    type: LIST_USER_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_USER_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_USER_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_USER_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -107,26 +109,28 @@ export const fetchListRole = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/role`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_ROLE_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/role`);
-
-                dispatch({
-                    type: LIST_ROLE_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_ROLE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_ROLE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_ROLE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -159,26 +163,28 @@ export const fetchListPermission = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/permission`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_PERMISSION_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/permission`);
-
-                dispatch({
-                    type: LIST_PERMISSION_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_PERMISSION_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_PERMISSION_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_PERMISSION_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -213,26 +219,28 @@ export const CreateRole = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/role`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_ROLE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/role`, data);
-
-                dispatch({
-                    type: CREATE_ROLE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: CREATE_ROLE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_ROLE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_ROLE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -267,26 +275,28 @@ export const updateUser = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/users/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_ROLE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/users/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_ROLE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: UPDATE_ROLE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_ROLE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_ROLE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -315,16 +325,22 @@ export const fetchSearchUser = (search, page, limit) => async (dispatch) => {
         return res.data;
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            let tokenNew = jwtService.signInWithToken();
-
-            if (tokenNew) {
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
-                const res = await axios.get(`users/search?keyword=${search}&page=${page}&size=${limit}`);
-                dispatch({type: LIST_USER_SEARCH_FETCHED, payload: res.data});
-                return res;
-            } else {
-                dispatch({type: LIST_USER_SEARCH_ERROR, payload: error});
-                throw error;
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+                    const res = await axios.get(`users/search?keyword=${search}&page=${page}&size=${limit}`);
+                    dispatch({type: LIST_USER_SEARCH_FETCHED, payload: res.data});
+                    return res;
+                } else {
+                    dispatch({type: LIST_USER_SEARCH_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_USER_SEARCH_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
             dispatch({type: LIST_USER_SEARCH_ERROR, payload: error});

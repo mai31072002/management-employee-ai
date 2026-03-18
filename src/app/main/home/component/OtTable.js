@@ -119,18 +119,18 @@ const OtTable = ({ employee }) => {
     // ---------------------------------
 
     useEffect(() => {
-        if (employee?.employeeId && month) {
+        if (employee?.userId && month) {
             dispatch(Actions.fetchListOtDateEmployeeId(
-                employee.employeeId, 
+                employee.userId, 
                 month.format("YYYY-MM")
             ));
         }
-    }, [dispatch, employee?.employeeId, month]);
+    }, [dispatch, employee?.userId, month]);
 
     useEffect(() => {
         if (checkDataList) {
             dispatch(Actions.fetchListOtDateEmployeeId(
-                employee?.employeeId, 
+                employee?.userId, 
                 month.format("YYYY-MM")
             )).finally(() =>
                 setCheckDataList(false)

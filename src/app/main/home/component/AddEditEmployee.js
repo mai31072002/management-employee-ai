@@ -30,19 +30,40 @@ const AddEditEmployee = ({
 
     useEffect(() => {
         if (editingRecord) {
-            const province = vietnamData.find((p) => p.Name === editingRecord.province);
+            const province = vietnamData.find((p) => p.Name === editingRecord?.employee?.province);
             setDistricts(province?.Wards || []);
-            const birthday = editingRecord.birthday ? dayjs(editingRecord.birthday) : null;
-            const startDate = editingRecord.startDate ? dayjs(editingRecord.startDate) : null;
-            const endDate = editingRecord.endDate ? dayjs(editingRecord.endDate) : null;
+            form.setFieldValue(["employee", "district"], undefined);
+
+            const birthday = editingRecord?.employee?.birthday ? dayjs(editingRecord?.employee?.birthday) : null;
+            const startDate = editingRecord?.employee?.startDate ? dayjs(editingRecord?.employee?.startDate) : null;
+            const endDate = editingRecord?.employee?.endDate ? dayjs(editingRecord?.employee?.endDate) : null;
             const age = birthday ? dayjs().diff(birthday, "year") : undefined;
+            
             form.setFieldsValue({
-                ...editingRecord,
-                birthday, 
-                age, 
-                startDate, 
-                endDate,
-                positionId: editingRecord.position?.id,
+                username: editingRecord?.username,
+                email: editingRecord?.email,
+                employee: {
+                    firstName: editingRecord?.employee?.firstName,
+                    lastName: editingRecord?.employee?.lastName,
+                    phone: editingRecord?.employee?.phone,
+                    cccd: editingRecord?.employee?.cccd,
+                    birthday, 
+                    age, 
+                    startDate, 
+                    endDate,
+                    gender: editingRecord?.employee?.gender,
+                    province: editingRecord?.employee?.province,
+                    district: editingRecord?.employee?.district,
+                    address: editingRecord?.employee?.address,
+                    positionName: editingRecord?.employee?.positionName,
+                    departmentName: editingRecord?.employee?.departmentName,
+                    employeesCode: editingRecord?.employee?.employeesCode,
+                    baseSalary: editingRecord?.employee?.baseSalary,
+                    allowance: editingRecord?.employee?.allowance,
+                    manages: editingRecord?.employee?.manages,
+                    description: editingRecord?.employee?.description,
+                    status: editingRecord?.employee?.status,
+                }
             });
         } else {
             form.resetFields();
@@ -59,14 +80,33 @@ const AddEditEmployee = ({
     };
 
     const handleFinish = (values) => {
-        const { age, ...cleanValues } = values;
+        const { age, ...cleanValues } = values; 
 
         const reqData = {
-            ...cleanValues,
-            birthday: dayjs(values.birthday).format("YYYY-MM-DD"),
-            gender: Number(values.gender),
-            status: Number(values.status),
-            isAvatarCleared: values.isAvatarCleared || false,
+            username: cleanValues.username,
+            email: cleanValues.email,
+            ...(editingRecord ? {} : { password: cleanValues.password }),
+            employee: {
+                firstName: cleanValues.employee?.firstName,
+                lastName: cleanValues.employee?.lastName,
+                phone: cleanValues.employee?.phone,
+                cccd: cleanValues.employee?.cccd,
+                birthday: cleanValues.employee?.birthday ? dayjs(cleanValues.employee.birthday).format("YYYY-MM-DD") : null,
+                gender: cleanValues.employee?.gender !== undefined ? Number(cleanValues.employee.gender) : null,
+                province: cleanValues.employee?.province,
+                district: cleanValues.employee?.district,
+                address: cleanValues.employee?.address,
+                positionName: cleanValues.employee?.positionName,
+                departmentName: cleanValues.employee?.departmentName,
+                employeesCode: cleanValues.employee?.employeesCode,
+                baseSalary: cleanValues.employee?.baseSalary ? Number(cleanValues.employee.baseSalary) : null,
+                allowance: cleanValues.employee?.allowance ? Number(cleanValues.employee.allowance) : null,
+                manages: cleanValues.employee?.manages,
+                description: cleanValues.employee?.description,
+                status: cleanValues.employee?.status !== undefined ? Number(cleanValues.employee.status) : null,
+                startDate: cleanValues.employee?.startDate ? dayjs(cleanValues.employee.startDate).format("YYYY-MM-DD") : null,
+                endDate: cleanValues.employee?.endDate ? dayjs(cleanValues.employee.endDate).format("YYYY-MM-DD") : null,
+            }
         };
 
         onSubmit(reqData, form);
@@ -96,15 +136,44 @@ const AddEditEmployee = ({
             onFinish={handleFinish} 
             className="model-from"
         >
-            <Form.Item name="employeeId" hidden>
+            <Form.Item name="userId" hidden>
                 <Input />
             </Form.Item>
 
+            {/* User Info Fields */}
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        label={t("userRole.username")}
+                        name="username"
+                        rules={[
+                            { required: true, message: t("account.validationUsernameRequired") },
+                            { min: 4, max: 128, message: t("employee.form.usernameLength") },
+                        ]}
+                    >
+                        <Input placeholder={t("userRole.username")} disabled={!!editingRecord} />
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item
+                        label={t("userRole.email")}
+                        name="email"
+                        rules={[
+                            { required: true, message: t("account.validationEmailRequired") },
+                            { type: "email", message: t("account.validationEmailInvalid") },
+                        ]}
+                    >
+                        <Input placeholder={t("userRole.email")} disabled={!!editingRecord} />
+                    </Form.Item>
+                </Col>
+            </Row>
+
+            {/* Employee Info Fields */}
             <Row gutter={16}>
                 <Col span={12}>
                     <Form.Item
                         label={t("common.firstName")}
-                        name="firstName"
+                        name={["employee", "firstName"]}
                         rules={[
                             { required: true, message: t("account.validationFirstNameRequired") },
                             { min: 2, max: 50, message: t("employee.form.firstNameLength") },
@@ -123,7 +192,7 @@ const AddEditEmployee = ({
                 <Col span={12}>
                     <Form.Item
                         label={t("common.lastName")}
-                        name="lastName"
+                        name={["employee", "lastName"]}
                         rules={[
                             { required: true, message: t("account.validationLastNameRequired") },
                             { min: 1, max: 50, message: t("employee.form.lastNameLength") },
@@ -170,7 +239,7 @@ const AddEditEmployee = ({
 
             <Form.Item 
                 label={t("account.phone")} 
-                name="phone" 
+                name={["employee", "phone"]} 
                 rules={[
                     { required: true, message: t("employee.form.phoneRequired") },
                     { pattern: /^(0|\+84)(\d{8,10})$/, message: t("employee.form.phoneInvalid") },
@@ -188,7 +257,7 @@ const AddEditEmployee = ({
 
             <Form.Item 
                 label={t("employee.form.cccd")} 
-                name="cccd" 
+                name={["employee", "cccd"]} 
                 rules={[
                     // { required: true, message: "Vui lòng nhập số CCCD" },
                     { pattern: /^[0-9]{9,15}$/, message: t("employee.form.cccdInvalid") },
@@ -208,7 +277,7 @@ const AddEditEmployee = ({
                 <Col span={12}>
                     <Form.Item
                         label={t("account.birthday")}
-                        name="birthday"
+                        name={["employee", "birthday"]}
                         rules={[
                             { required: true, message: t("employee.form.birthdayRequired") },
                             {
@@ -240,7 +309,7 @@ const AddEditEmployee = ({
                 <Col span={12}>
                     <Form.Item
                         label={t("account.gender")}
-                        name="gender"
+                        name={["employee", "gender"]}
                         rules={[{ required: true, message: t("employee.form.genderRequired") }]}
                     >
                         <Radio.Group>
@@ -251,20 +320,24 @@ const AddEditEmployee = ({
                 </Col>
             </Row>
 
-            <Form.Item label={t("employee.form.age")} name="age" rules={[{ required: true, message: " " }]}>
+            <Form.Item 
+                label={t("employee.form.age")} 
+                name={["employee", "age"]} 
+                rules={[{ required: true, message: " " }]}
+            >
                 <Input placeholder={t("employee.form.age")} disabled />
             </Form.Item>
 
             <Form.Item
                 label={t("employee.form.startDate")}
-                name="startDate"
+                name={["employee", "startDate"]}
                 rules={[{ required: true, message: t("employee.form.startDateRequired") }]}
             >
                 <DatePicker format="DD/MM/YYYY" className="w-100" />
             </Form.Item>
             <Form.Item
                 label={t("employee.form.endDate")}
-                name="endDate"
+                name={["employee", "endDate"]}
                 dependencies={["startDate"]}
                 rules={[
                     { required: false, message: t("employee.form.endDateSelect") },
@@ -288,7 +361,11 @@ const AddEditEmployee = ({
                 <DatePicker format="DD/MM/YYYY" className="w-100" />
             </Form.Item>
 
-            <Form.Item label={t("employee.form.province")} name="province" rules={[{ required: true, message: " " }]}>
+            <Form.Item 
+                label={t("employee.form.province")} 
+                name={["employee", "province"]} 
+                rules={[{ required: true, message: " " }]}
+            >
                 <Select
                     showSearch
                     placeholder={t("employee.form.province")}
@@ -313,7 +390,11 @@ const AddEditEmployee = ({
                 </Select>
             </Form.Item>
 
-            <Form.Item label={t("employee.form.district")} name="district" rules={[{ required: true, message: " " }]}>
+            <Form.Item 
+                label={t("employee.form.district")} 
+                name={["employee", "district"]} 
+                rules={[{ required: true, message: " " }]}
+            >
                 <Select
                     showSearch
                     placeholder={t("employee.form.district")}
@@ -339,7 +420,7 @@ const AddEditEmployee = ({
 
             <Form.Item 
                 label={t("employee.form.address")} 
-                name="address" 
+                name={["employee", "address"]} 
                 rules={[
                     { required: true, message: t("employee.form.addressRequired") },
                     { max: 255, message: t("employee.form.addressMax") },
@@ -348,10 +429,14 @@ const AddEditEmployee = ({
                 <Input placeholder={t("employee.form.address")} />
             </Form.Item>
 
-            <Form.Item label={t("employee.form.position")} name="positionId" rules={[{ required: true }]}>
+            <Form.Item 
+                label={t("employee.form.position")} 
+                name={["employee", "positionName"]} 
+                rules={[{ required: true }]}
+            >
                 <Select placeholder={t("employee.form.position")}>
                     {position.map((item) => (
-                    <Option key={item.id} value={item.id}>
+                    <Option key={item.id} value={item.positionName}>
                         {item.positionName}
                     </Option>
                     ))}
@@ -360,7 +445,7 @@ const AddEditEmployee = ({
 
             <Form.Item
                 label={t("employee.form.department")}
-                name="departmentId"
+                name={["employee", "departmentName"]}
                 rules={[{ required: true, message: t("employee.form.departmentRequired") }]}
             >
                 <Select
@@ -368,7 +453,7 @@ const AddEditEmployee = ({
                     allowClear
                 >
                     {departmentList?.department?.map((item) => (
-                        <Select.Option key={item.id} value={item.id}>
+                        <Select.Option key={item.id} value={item.departmentName}>
                             {item.departmentName}
                         </Select.Option>
                     ))}
@@ -378,7 +463,7 @@ const AddEditEmployee = ({
 
             <Form.Item
                 label={t("employee.form.employeeCode")}
-                name="employeesCode"
+                name={["employee", "employeesCode"]}
                 rules={[{ required: true, message: t("employee.form.employeeCodeRequired") }]}
             >
                 <Input placeholder={t("employee.form.employeeCode")} />
@@ -388,7 +473,7 @@ const AddEditEmployee = ({
                 <Col span={12}>
                     <Form.Item
                         label={t("employee.form.baseSalary")}
-                        name="baseSalary"
+                        name={["employee", "baseSalary"]}
                         rules={[{ required: true, message: t("employee.form.baseSalaryRequired") }]}
                     >
                         <Input type="number" min={0} />
@@ -397,7 +482,7 @@ const AddEditEmployee = ({
                 <Col span={12}>
                     <Form.Item
                         label={t("employee.form.allowance")}
-                        name="allowance"
+                        name={["employee", "allowance"]}
                         rules={[{ required: true, message: t("employee.form.allowanceRequired") }]}
                     >
                         <Input type="number" min={0} />
@@ -407,17 +492,24 @@ const AddEditEmployee = ({
 
             <Form.Item 
                 label={t("employee.form.manager")} 
-                name="manages"
+                name={["employee", "manages"]}
                 rules={[{ required: true, message: t("employee.form.managerRequired") }]}
             >
                 <Input placeholder={t("employee.form.manager")} />
             </Form.Item>
 
-            <Form.Item label={t("employee.form.description")} name="description">
+            <Form.Item 
+                label={t("employee.form.description")} 
+                name={["employee", "description"]}
+            >
                 <TextArea rows={3} placeholder={t("employee.form.description")} />
             </Form.Item>
 
-            <Form.Item label={t("employee.form.status")} name="status" rules={[{ required: true, message: " " }]}>
+            <Form.Item 
+                label={t("employee.form.status")} 
+                name={["employee", "status"]} 
+                rules={[{ required: true, message: " " }]}
+            >
                 <Radio.Group>
                     <Radio value={1}>{t("employee.statusValue.working")}</Radio>
                     {editingRecord && <Radio value={2}>{t("employee.statusValue.quit")}</Radio>}

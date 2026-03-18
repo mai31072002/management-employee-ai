@@ -51,36 +51,35 @@ export const fetchListDepartment = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/department`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_DEPARTMENT_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/department`);
-
-                dispatch({
-                    type: LIST_DEPARTMENT_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_DEPARTMENT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_DEPARTMENT_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: LIST_DEPARTMENT_ERROR, payload: error});
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: LIST_DEPARTMENT_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
     }
 };
 
@@ -107,36 +106,35 @@ export const CreateDepartment = (data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/department`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_DEPARTMENT, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/department`, data);
-
-                dispatch({
-                    type: CREATE_DEPARTMENT, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_DEPARTMENT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_DEPARTMENT_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: CREATE_DEPARTMENT_ERROR, payload: error});
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: CREATE_DEPARTMENT_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
     }
 };
 
@@ -163,36 +161,35 @@ export const updateDepartment = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/department/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_DEPARTMENT, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/department/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_DEPARTMENT, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_DEPARTMENT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_DEPARTMENT_ERROR, payload: refreshError});
+                throw refreshError;
+            }
+        } else {
 
                 dispatch({type: UPDATE_DEPARTMENT_ERROR, payload: error});
 
                 throw error;
             }
-        } else {
-
-            dispatch({
-                type: UPDATE_DEPARTMENT_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
     }
 };
 
@@ -219,36 +216,34 @@ export const deleteDepartment = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.delete(`/department/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: DELETE_DEPARTMENT, 
+                        payload: res.data
+                    });
 
-                const res = await axios.delete(`/department/${id}`);
-
-                dispatch({
-                    type: DELETE_DEPARTMENT, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: DELETE_DEPARTMENT_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: DELETE_DEPARTMENT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: DELETE_DEPARTMENT_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
-            dispatch({
-                type: DELETE_DEPARTMENT_ERROR, 
-                payload: error
-            });
-
-            throw error;
-        }
+                dispatch({type: DELETE_DEPARTMENT_ERROR, payload: error});
+                throw error;
+            }
     }
 };
 

@@ -11,6 +11,7 @@ const Item = ({ label, value, span = 12 }) => (
 );
 
 const EmployeeInfo = ({ employee }) => {
+
     const { t } = useTranslation();
     if (!employee) return null;
 
@@ -27,12 +28,12 @@ const EmployeeInfo = ({ employee }) => {
                     }}
                 />
                 <div style={{ marginTop: 8, fontWeight: 600 }}>
-                    {employee.fullName}
+                    {employee.employee.fullName}
                 </div>
 
                 <div style={{ marginTop: 6 }}>
                     <Tag color="blue" style={{ marginTop: 8 }}>
-                        {employee?.position || t("account.noPosition")} - {employee.department || t("account.noDepartment")}
+                        {employee?.employee?.positionName || t("account.noPosition")} - {employee?.employee?.departmentName || t("account.noDepartment")}
                     </Tag>
                 </div>
             </Col>
@@ -40,22 +41,22 @@ const EmployeeInfo = ({ employee }) => {
             {/* Info */}
             <Col span={24} md={18}>
                 <Row gutter={[16, 16]}>
-                    <Item label={t("account.employeeCode")} value={employee.employeesCode} />
-                    <Item label={t("userRole.username")} value={employee.username} />
-                    <Item label={t("account.birthday")} value={dayjs(employee.birthday).format('DD/MM/YYYY')} />
-                    <Item label={t("account.gender")} value={employee.gender === 1 ? t("employee.genderValue.male") : t("employee.genderValue.female")} />
-                    <Item label={t("account.phone")} value={employee.phone} />
-                    <Item label={t("userRole.email")} value={employee.email} span={24} />
-                    <Item label={t("account.manager")} value={employee.manages} />
+                    <Item label={t("account.employeeCode")} value={employee?.employee?.employeesCode} />
+                    <Item label={t("userRole.username")} value={employee?.username} />
+                    <Item label={t("account.birthday")} value={dayjs(employee?.employee?.birthday).format('DD/MM/YYYY')} />
+                    <Item label={t("account.gender")} value={employee?.employee?.gender === 1 ? t("employee.genderValue.male") : t("employee.genderValue.female")} />
+                    <Item label={t("account.phone")} value={employee?.employee?.phone} />
+                    <Item label={t("userRole.email")} value={employee?.employee?.email} span={24} />
+                    <Item label={t("account.manager")} value={employee?.employee?.manages} />
 
                     <Item
                         label={t("account.workTime")}
                         span={24}
                         value={
-                        employee.startDate
-                            ? `${dayjs(employee.startDate).format('DD/MM/YYYY')} → ${
-                                employee.endDate
-                                ? dayjs(employee.endDate).format('DD/MM/YYYY')
+                        employee?.employee?.startDate
+                            ? `${dayjs(employee?.employee?.startDate).format('DD/MM/YYYY')} → ${
+                                employee?.employee?.endDate
+                                ? dayjs(employee?.employee?.endDate).format('DD/MM/YYYY')
                                 : t("account.present")
                             }`
                             : '—'
@@ -65,14 +66,14 @@ const EmployeeInfo = ({ employee }) => {
                     <Item
                         label={t("account.address")}
                         span={24}
-                        value={`${employee.address}, ${employee.district}, ${employee.province}`}
+                        value={`${employee?.employee?.address}, ${employee?.employee?.district}, ${employee?.employee?.province}`}
                     />
 
                     <Item
                         label={t("account.status")}
                         value={
-                            <Tag color={employee.status === 1 ? 'green' : 'red'}>
-                                {employee.status === 1 ? t("account.working") : t("account.stopped")}
+                            <Tag color={employee?.employee?.status === 1 ? 'green' : 'red'}>
+                                {employee?.employee?.status === 1 ? t("account.working") : t("account.stopped")}
                             </Tag>
                         }
                     />
@@ -83,4 +84,5 @@ const EmployeeInfo = ({ employee }) => {
 };
 
 export default EmployeeInfo;
+
 

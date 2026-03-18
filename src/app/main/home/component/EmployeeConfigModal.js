@@ -24,7 +24,7 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
             width="90%"
             centered
             destroyOnHidden
-            title={t("employeeDetail.title", { name: employee?.fullName || "" })}
+            title={t("employeeDetail.title", { name: employee?.employee?.fullName || "" })}
         >
             <Tabs
                 className="model-from"
@@ -73,7 +73,7 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
                         key: 'attendance',
                         label: t("employeeDetail.attendance"),
                         children: (
-                        <AttendanceCalendar employeeId={employee?.employeeId} />
+                            <AttendanceCalendar employeeId={employee?.userId} />
                         ),
                     },
                     {
@@ -91,7 +91,7 @@ const EmployeeConfigModal = ({ open, onClose, employee, onEdit, onDelete }) => {
                     {
                         key: 'salary',
                         label: t("employeeDetail.salary"),
-                        children: <SalaryInfo employeeId={employee?.employeeId} />,
+                        children: <SalaryInfo employeeId={employee?.userId} />,
                     },
                 ]}
             />

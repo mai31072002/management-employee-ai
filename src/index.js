@@ -15,7 +15,7 @@ dayjs.extend(localeData);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 if (AuthConfig.guestPath.indexOf(window.location.pathname) === -1) {
     root.render(
-        // <React.StrictMode>
+        // <React.StrictMode> // Tắt khi ở dev
             <ThemeProvider>
                 <App path={window.location.pathname} />
             </ThemeProvider>

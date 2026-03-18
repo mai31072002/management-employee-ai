@@ -50,26 +50,28 @@ export const fetchListLever = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/lever`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_LEVER_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/lever`);
-
-                dispatch({
-                    type: LIST_LEVER_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_LEVER_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_LEVER_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_LEVER_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -106,26 +108,28 @@ export const CreateLever = (data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/lever`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_LEVER, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/lever`, data);
-
-                dispatch({
-                    type: CREATE_LEVER, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: CREATE_LEVER_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_LEVER_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_LEVER_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -162,26 +166,28 @@ export const updateLever = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/lever/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_LEVER, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/lever/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_LEVER, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: UPDATE_LEVER_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_LEVER_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_LEVER_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -218,26 +224,28 @@ export const deleteLever = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.delete(`/lever/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: DELETE_LEVER, 
+                        payload: res.data
+                    });
 
-                const res = await axios.delete(`/lever/${id}`);
-
-                dispatch({
-                    type: DELETE_LEVER, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: DELETE_LEVER_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: DELETE_LEVER_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: DELETE_LEVER_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 

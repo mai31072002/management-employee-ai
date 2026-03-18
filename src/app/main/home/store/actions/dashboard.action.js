@@ -60,11 +60,11 @@ export const fetchListEmployee = (page, limit) => async (dispatch) => {
     dispatch({type: LIST_EMPLOYEE_LOADING});
 
     try {
-        const res = await axios.get(`/employee?page=${page}&size=${limit}`);
+        const res = await axios.get(`/users?page=${page}&size=${limit}`);
 
         dispatch({
             type: LIST_EMPLOYEE_FETCHED,
-            payload: res.data,
+            payload: res.data.data,
         });
 
         return res.data;
@@ -75,26 +75,28 @@ export const fetchListEmployee = (page, limit) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/users?page=${page}&size=${limit}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_EMPLOYEE_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/employee?page=${page}&size=${limit}`);
-
-                dispatch({
-                    type: LIST_EMPLOYEE_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -110,7 +112,7 @@ export const fetchListEmployee = (page, limit) => async (dispatch) => {
 
 export const fetchEmployeeDettail = (id) => async (dispatch) => {
     try {
-        const res = await axios.get(`/employee/${id}`);
+        const res = await axios.get(`/users/${id}`);
 
         dispatch({
             type: EMPLOYEE_DETAIL_FETCHED,
@@ -125,26 +127,28 @@ export const fetchEmployeeDettail = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/users/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: EMPLOYEE_DETAIL_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/employee/${id}`);
-
-                dispatch({
-                    type: EMPLOYEE_DETAIL_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: EMPLOYEE_DETAIL_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: EMPLOYEE_DETAIL_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: EMPLOYEE_DETAIL_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -177,26 +181,28 @@ export const fetchListPosition = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/position`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_POSITION_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/position`);
-
-                dispatch({
-                    type: LIST_POSITION_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_POSITION_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_POSITION_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_POSITION_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -229,26 +235,28 @@ export const fetchListDepartment = () => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/department`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: LIST_DEPARTMENT_FETCHED, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/department`);
-
-                dispatch({
-                    type: LIST_DEPARTMENT_FETCHED, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: LIST_DEPARTMENT_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: LIST_DEPARTMENT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_DEPARTMENT_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -265,7 +273,7 @@ export const fetchListDepartment = () => async (dispatch) => {
 export const CreateEmployee = (data) => async (dispatch) => {
 
     try {
-        const res = await axios.post(`/employee`, data);
+        const res = await axios.post(`/users`, data);
 
         if (res.data.status === 200) {
             dispatch({
@@ -283,26 +291,28 @@ export const CreateEmployee = (data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.post(`/users`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: CREATE_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.post(`/employee`, data);
-
-                dispatch({
-                    type: CREATE_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: CREATE_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: CREATE_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: CREATE_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -319,7 +329,7 @@ export const CreateEmployee = (data) => async (dispatch) => {
 export const UpdateEmployee = (id, data) => async (dispatch) => {
 
     try {
-        const res = await axios.put(`/employee/${id}`, data);
+        const res = await axios.put(`/users/${id}`, data);
 
         if (res.data && res.data.status === 200) {
             dispatch({
@@ -340,26 +350,28 @@ export const UpdateEmployee = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/users/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/employee/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: UPDATE_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -375,7 +387,7 @@ export const UpdateEmployee = (id, data) => async (dispatch) => {
 
 export const DeleteEmployee = (id) => async (dispatch) => {
     try {
-        const res = await axios.delete(`/employee/${id}`);
+        const res = await axios.delete(`/users/${id}`);
 
         if (res.data && res.data.status === 200) {
             dispatch({
@@ -396,26 +408,28 @@ export const DeleteEmployee = (id) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.delete(`/users/${id}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: DELETE_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.delete(`/employee/${id}`);
-
-                dispatch({
-                    type: DELETE_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: DELETE_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: DELETE_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: DELETE_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -452,26 +466,28 @@ export const fetchListSalary = (id, yearMonth) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/salary/${id}?yearMonth=${yearMonth}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: SALARY_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/salary/${id}?yearMonth=${yearMonth}`);
-
-                dispatch({
-                    type: SALARY_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: SALARY_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: SALARY_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: SALARY_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -508,26 +524,28 @@ export const fetchListTimekeeping = (id, yearMonth) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.get(`/time-keeping/${id}?yearMonth=${yearMonth}`);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: TIMEKEEPING_EMPLOYEE, 
+                        payload: res.data
+                    });
 
-                const res = await axios.get(`/time-keeping/${id}?yearMonth=${yearMonth}`);
-
-                dispatch({
-                    type: TIMEKEEPING_EMPLOYEE, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: TIMEKEEPING_EMPLOYEE_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: TIMEKEEPING_EMPLOYEE_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: TIMEKEEPING_EMPLOYEE_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
@@ -545,8 +563,7 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
     dispatch({type: LIST_EMPLOYEE_LOADING});
 
     try {
-        const res = await axios.get(`/employee/search-employee?keyword=${search}&page=${page}&size=${limit}`);
-
+        const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`);
         console.log("search employee: ", res);
         
         dispatch({
@@ -556,16 +573,22 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
         return res.data;
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            let tokenNew = jwtService.signInWithToken();
-
-            if (tokenNew) {
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
-                const res = await axios.get(`/employee/search-employee?keyword=${search}&page=${page}&size=${limit}`);
-                dispatch({type: LIST_EMPLOYEE_SEARCH_FETCHED, payload: res.data});
-                return res;
-            } else {
-                dispatch({type: LIST_EMPLOYEE_SEARCH_ERROR, payload: error});
-                throw error;
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+                    const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`);
+                    dispatch({type: LIST_EMPLOYEE_SEARCH_FETCHED, payload: res.data});
+                    return res;
+                } else {
+                    dispatch({type: LIST_EMPLOYEE_SEARCH_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: LIST_EMPLOYEE_SEARCH_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
             dispatch({type: LIST_EMPLOYEE_SEARCH_ERROR, payload: error});

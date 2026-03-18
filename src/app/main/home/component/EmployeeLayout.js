@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Table, Tag, Spin, Row, Col, Button, Input, AutoComplete, Tooltip, Pagination } from 'antd';
-import { CalendarOutlined, PlusOutlined, SearchOutlined, EyeOutlined} from '@ant-design/icons';
+import { Table, Tag, Spin, Row, Col, Button, Input, AutoComplete, Tooltip, Pagination, Space } from 'antd';
+import { CalendarOutlined, PlusOutlined, SearchOutlined, EyeOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import AddEditEmployee from './AddEditEmployee';
 import { useTranslation } from "react-i18next";
@@ -21,18 +21,21 @@ const EmployeeLayout = ({
     isModalVisible,
     searchTerm,
     onSearch,
-    onSearchTermChange
+    onSearchTermChange,
+    // New props for import functionality
+    handleOpenImport,
+    handleDownloadTemplate
 }) => {
     const { t } = useTranslation();
 
     const columns = useMemo ( 
         () => [
-            { title: t("employee.columns.code"), dataIndex: 'employeesCode', key: 'employeesCode' },
-            { title: t("employee.columns.fullName"), dataIndex: 'fullName', key: 'fullName' },
+            { title: t("employee.columns.code"), dataIndex: ["employee", "employeesCode"], key: 'employeesCode' },
+            { title: t("employee.columns.fullName"), dataIndex: ["employee", "fullName"], key: 'fullName' },
             { title: t("employee.columns.username"), dataIndex: 'username', key: 'username' },
             {
                 title: t("employee.columns.gender"),
-                dataIndex: "gender",
+                dataIndex: ["employee", "gender"],
                 render: (gender) =>
                 gender === 1
                     ? t("employee.genderValue.male")
@@ -42,7 +45,7 @@ const EmployeeLayout = ({
             },
             {
                 title: t("employee.columns.birthday"),
-                dataIndex: "birthday",
+                dataIndex: ["employee", "birthday"],
                 render: (value) =>
                     value ? (
                         <span style={{ display: "flex", alignItems: "center" }}>
@@ -57,24 +60,24 @@ const EmployeeLayout = ({
                 title: t("employee.columns.workTime"),
                 key: 'time',
                 render: (_, record) => {
-                    const start = record.startDate ? dayjs(record.startDate).format('DD/MM/YYYY') : '';
-                    const end = record.endDate ? dayjs(record.endDate).format('DD/MM/YYYY') : '';
+                    const start = record?.employee.startDate ? dayjs(record?.employee.startDate).format('DD/MM/YYYY') : '';
+                    const end = record?.employee.endDate ? dayjs(record?.employee.endDate).format('DD/MM/YYYY') : '';
                     return start && end ? `${start} - ${end}` : start || end || '-';
                 }
             },
             {
                 title: t("employee.columns.position"),
-                dataIndex: "positionName",
+                dataIndex: ["employee", "positionName"],
                 key: "positionName",
             },
             {
                 title: t("employee.columns.department"),
-                dataIndex: "departmentName",
+                dataIndex: ["employee", "departmentName"],
                 key: "departmentName",
             },
             {
                 title: t("employee.columns.status"),
-                dataIndex: "status",
+                dataIndex: ["employee", "status"],
                 align: "center",
                 render: (status) => {
                     switch (status) {
@@ -127,9 +130,32 @@ const EmployeeLayout = ({
             <Col span={24}>
                 <div className='dashboard-title'>
                     <h2>{t("employee.listTitle")}</h2>
-                    <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={handleOpenAdd}>
-                        {t("employee.addNew")}
-                    </Button>
+                    <Space className="action-buttons">
+                        <Button 
+                            type="default" 
+                            shape="round" 
+                            icon={<UploadOutlined/>}
+                            onClick={handleOpenImport}
+                        >
+                            {t("employee.importExcel.title")}
+                        </Button>
+                        <Button 
+                            type="default" 
+                            shape="round" 
+                            icon={<DownloadOutlined/>}
+                            onClick={handleDownloadTemplate}
+                        >
+                            {t("employee.downloadTemplate.title")}
+                        </Button>
+                        <Button 
+                            type="primary" 
+                            shape="round" 
+                            icon={<PlusOutlined/>} 
+                            onClick={handleOpenAdd}
+                        >
+                            {t("employee.addNew")}
+                        </Button>
+                    </Space>
                 </div>
             </Col>
             <Col span={24} className="header-candidate">
@@ -185,7 +211,7 @@ const EmployeeLayout = ({
                             size="small"
                             columns={columns}
                             dataSource={dataList}
-                            rowKey="employeeId"
+                            rowKey="userId"
                             pagination = {false}
                             // pagination = {{
                             //     current: page,

@@ -38,26 +38,28 @@ export const UpdateAccount = (id, data) => async (dispatch) => {
 
         if (error.response && error.response.status === 401) {
 
-            let tokenNew = jwtService.signInWithToken();
+            try {
+                const tokenData = await jwtService.signInWithToken();
+                
+                if (tokenData && tokenData.data) {
+                    const newToken = tokenData.data.accessToken;
+                    axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
 
-            if (tokenNew) {
+                    const res = await axios.put(`/users/${id}`, data);
 
-                axios.defaults.headers.common.Authorization = `Bearer ${tokenNew}`;
+                    dispatch({
+                        type: UPDATE_ACCOUNT, 
+                        payload: res.data
+                    });
 
-                const res = await axios.put(`/users/${id}`, data);
-
-                dispatch({
-                    type: UPDATE_ACCOUNT, 
-                    payload: res.data
-                });
-
-                return res.data;
-
-            } else {
-
-                dispatch({type: UPDATE_ACCOUNT_ERROR, payload: error});
-
-                throw error;
+                    return res.data;
+                } else {
+                    dispatch({type: UPDATE_ACCOUNT_ERROR, payload: error});
+                    throw error;
+                }
+            } catch (refreshError) {
+                dispatch({type: UPDATE_ACCOUNT_ERROR, payload: refreshError});
+                throw refreshError;
             }
         } else {
 
