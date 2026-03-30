@@ -22,6 +22,8 @@ const initialState = {
         message: "",
     },
     createRole: null,
+    deleteRole: null,
+    updateRole: null,
 }
 
 const userRoleReducer = (state  = initialState, action) => {
@@ -87,6 +89,26 @@ const userRoleReducer = (state  = initialState, action) => {
             return {
                 ...state,
                 createRole: action.payload,
+            }
+        case Action.DELETE_ROLE:
+            return {
+                ...state,
+                deleteRole: action.payload,
+            }
+        case Action.UPDATE_ROLE:
+            return {
+                ...state,
+                updateRole: action.payload,
+            }
+        case Action.DELETE_ROLE_ERROR:
+            return {
+                ...state,
+                deleteRole: action.payload,
+            }
+        case Action.UPDATE_ROLE_ERROR:
+            return {
+                ...state,
+                updateRole: action.payload,
             }
         default:
             return state;

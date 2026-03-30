@@ -106,7 +106,7 @@ export const fetchEmployeeDetail = (id) => async (dispatch) => {
     const fetchData = async (token) => {
         try {
             axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-            const employeeDetail = await axios.get(`/employee/${id}`);
+            const employeeDetail = await axios.get(`/users/${id}`);
             
             dispatch(UserActions.setEmployeeDetail(employeeDetail));
         } catch (error) {
@@ -116,7 +116,7 @@ export const fetchEmployeeDetail = (id) => async (dispatch) => {
                     if (newToken) {
                         localStorage.setItem("jwt_access_token", newToken);
                         axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-                        const employeeDetail = await axios.get(`/employee/${id}`);
+                        const employeeDetail = await axios.get(`/users/${id}`);
                         
                         dispatch(UserActions.setEmployeeDetail(employeeDetail));
                     } else {

@@ -12,15 +12,22 @@ const userRoleConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "/user-role",
-      exact: true,
-      component: React.lazy(
-        () => import("./user_role"),
-      ),
+        path: "/user-role",
+        exact: true,
+        component: React.lazy(
+            () => import("./user_role"),
+        ),
+    },
+    {
+        path: "/role",
+        exact: true,
+        component: React.lazy(
+            () => import("./role"),
+        ),
     },
   ],
 
-  guestPath: ["/user-role"],
+  guestPath: ["/user-role", "/role"],
 };
 
 export default userRoleConfig;

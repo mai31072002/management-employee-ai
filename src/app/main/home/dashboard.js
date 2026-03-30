@@ -23,6 +23,7 @@ const Dashboard = () => {
     const [selectEmployee, setSelectEmployee] = useState(null);
     const [selectRecord, setSelectRecord] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     
     // New states for import functionality
@@ -68,6 +69,33 @@ const Dashboard = () => {
         }
     }, [checkDataList, page, limit, dispatch]);
 
+    useEffect(() => {
+        // Thiết lập một hàng đợi (timer)
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 1000); // Đợi 500ms sau khi ngừng gõ
+
+        // Cleanup function: Xóa timer cũ nếu searchTerm thay đổi trước khi hết 500ms
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    useEffect(() => {
+        const trimmed = debouncedSearchTerm.trim();
+        
+        if (trimmed) {
+            setIsSearching(true);
+            // Gọi action search ở đây
+            dispatch(Actions.fetchSearchEmployee(trimmed, 0, 10))
+                .catch(() => message.error(t("employee.searchError")));
+        } else {
+            // Nếu xóa trắng ô search, refresh lại danh sách gốc
+            setIsSearching(false);
+            refreshList(1, limit);
+        }
+    }, [debouncedSearchTerm, dispatch]);
+
     // ---------------------------------
     // HENDLERS
     // ---------------------------------
@@ -102,7 +130,7 @@ const Dashboard = () => {
     const handleSubmitModal = async (values) => {
         
         if (editingRecord) {
-            await dispatch(Actions.UpdateEmployee(editingRecord.employeeId, values));
+            await dispatch(Actions.UpdateEmployee(editingRecord.userId, values));
         } else {
             await dispatch(Actions.CreateEmployee(values));
         }
@@ -113,7 +141,7 @@ const Dashboard = () => {
     const handleDelete = async (record) => {
         
         try {
-            const res = await dispatch(Actions.DeleteEmployee(record.employeeId));
+            const res = await dispatch(Actions.DeleteEmployee(record.userId));
             
             const fullName = `${record.firstName ?? ""} ${
                 record.lastName ?? ""
@@ -166,16 +194,16 @@ const Dashboard = () => {
     const handleSearch = (keyword) => {
         setSearchTerm(keyword);
 
-        const trimmed = keyword.trim();
-        if (!trimmed) {
-            setIsSearching(false);
-            refreshList(1, limit);
-            return;
-        }
-        setIsSearching(true);
-        dispatch(Actions.fetchSearchEmployee(trimmed, 0, 10)).catch(() => {
-            message.error(t("employee.searchError"));
-        });
+        // const trimmed = keyword.trim();
+        // if (!trimmed) {
+        //     setIsSearching(false);
+        //     refreshList(1, limit);
+        //     return;
+        // }
+        // setIsSearching(true);
+        // dispatch(Actions.fetchSearchEmployee(trimmed, 0, 10)).catch(() => {
+        //     message.error(t("employee.searchError"));
+        // });
     };
 
     // ---------------------------------
@@ -198,8 +226,6 @@ const Dashboard = () => {
             setCheckDataList(true); // Refresh list
         } catch (error) {
             message.error(error.message || t("employee.import.error"));
-        } finally {
-            setImportLoading(false);
         }
     };
 

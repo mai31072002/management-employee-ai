@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiConfig from "app/configs/api.config";
 import jwtService from "app/service/jwt";
+import { getSearchSignal } from "app/helpers/common";
 
 // ===========  EXPORT ACTION  ============  //
 
@@ -559,12 +560,15 @@ export const fetchListTimekeeping = (id, yearMonth) => async (dispatch) => {
     }
 };
 
-export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => {
+export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => {   
+    // Lấy signal dành riêng cho việc tìm kiếm nhân viên
+    const signal = getSearchSignal('EMPLOYEE_SEARCH');
+
     dispatch({type: LIST_EMPLOYEE_LOADING});
 
     try {
-        const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`);
-        console.log("search employee: ", res);
+        const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`, {signal});
+        console.log("search employee: ", res.data);
         
         dispatch({
             type: LIST_EMPLOYEE_SEARCH_FETCHED,
@@ -572,6 +576,11 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
         });
         return res.data;
     } catch (error) {
+        if (axios.isCancel(error)) {
+            console.log("Đã hủy request cũ để ưu tiên request mới nhất");
+            return; // Bỏ qua nếu request bị hủy
+        }
+        
         if (error.response && error.response.status === 401) {
             try {
                 const tokenData = await jwtService.signInWithToken();
@@ -579,7 +588,9 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
                 if (tokenData && tokenData.data) {
                     const newToken = tokenData.data.accessToken;
                     axios.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-                    const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`);
+                    const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`, {
+                        signal: getSearchSignal('EMPLOYEE_SEARCH')
+                    });
                     dispatch({type: LIST_EMPLOYEE_SEARCH_FETCHED, payload: res.data});
                     return res;
                 } else {
@@ -587,6 +598,10 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
                     throw error;
                 }
             } catch (refreshError) {
+                if (axios.isCancel(refreshError)) {
+                    console.log("Đã hủy request cũ để ưu tiên request mới nhất");
+                    return; // Bỏ qua nếu request bị hủy
+                }
                 dispatch({type: LIST_EMPLOYEE_SEARCH_ERROR, payload: refreshError});
                 throw refreshError;
             }

@@ -34,13 +34,19 @@ export const importExcel = (formData, onProgress) => async (dispatch) => {
             },
         });
 
-        dispatch({
-            type: "IMPORT_EXCEL_SUCCESS",
-            payload: response.data,
-        });
+        console.log("response: ", response);
+
+        // Check if response indicates an error
+        if (response.data.status === 200) {
+            dispatch({
+                type: "IMPORT_EXCEL_SUCCESS",
+                payload: response.data,
+            });
+        }
 
         return response.data;
     } catch (error) {
+        console.log("error 22", error);
         dispatch({
             type: "IMPORT_EXCEL_FAILURE",
             payload: error.response?.data?.message || error.message,

@@ -9,7 +9,8 @@ import {
   ApartmentOutlined,
   SolutionOutlined,
   RiseOutlined,
-  FieldTimeOutlined
+  FieldTimeOutlined,
+  UsergroupAddOutlined
 } from "@ant-design/icons";
 import { Menu, Layout, Modal } from "antd";
 import history from "@history"; // đúng path của bạn
@@ -43,8 +44,9 @@ const Sidebar = ({ collapsed, onCollapse }) => {
             getItem(t("common.english"), "lang_en"),
         ]),
         getItem(t("sidebar.settings"), "sub1", <SettingOutlined />, [
-            getItem(t("sidebar.account"), "/account", <UserOutlined />),
+            getItem(t("sidebar.infoAccount"), "/account", <UserOutlined />),
             getItem(t("sidebar.authorization"), "/user-role", <BranchesOutlined />),
+            getItem(t("sidebar.roleManagement"), "/role", <UsergroupAddOutlined />),
             getItem(t("sidebar.logoutTitle"), "logout", <LogoutOutlined />),
         ]),
         getItem(t("sidebar.files"), "/files", <FileOutlined />),

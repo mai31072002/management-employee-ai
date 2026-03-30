@@ -23,13 +23,13 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
                         file.type === "application/vnd.ms-excel";
         
         if (!isExcel) {
-            setError(t("employee.import.fileTypeError"));
+            setError(t("employee.fileTypeError"));
             return false;
         }
 
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
-            setError(t("employee.import.fileSizeError"));
+            setError(t("employee.fileSizeError"));
             return false;
         }
 
@@ -38,7 +38,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
 
     const handleImport = async () => {
         if (fileList.length === 0) {
-            setError(t("employee.import.noFileSelected"));
+            setError(t("employee.noFileSelected"));
             return;
         }
 
@@ -55,7 +55,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
             setFileList([]);
             setUploadProgress(0);
         } catch (error) {
-            setError(error.message || t("employee.import.error"));
+            setError(error.message || t("employee.error"));
             setUploadProgress(0);
         }
     };
@@ -92,7 +92,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
             onCancel={handleClose}
             footer={[
                 <Button key="template" icon={<DownloadOutlined />} onClick={handleDownloadTemplate}>
-                    {t("employee.downloadTemplate")}
+                    {t("employee.downloadTemplate.title")}
                 </Button>,
                 <Button key="cancel" onClick={handleClose}>
                     {t("common.cancel")}
@@ -113,7 +113,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
                 {/* Instructions */}
                 <Alert
-                    message={t("employee.import.instructions")}
+                    message={t("employee.instructions")}
                     description={
                         <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
                             <li>{t("employee.importExcel.step1")}</li>
@@ -154,7 +154,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
                 {/* Progress Bar */}
                 {loading && (
                     <div>
-                        <Text>{t("employee.import.importing")}</Text>
+                        <Text>{t("employee.importing")}</Text>
                         <Progress percent={uploadProgress} status="active" />
                     </div>
                 )}
@@ -162,7 +162,7 @@ const ImportExcelModal = ({ open, onCancel, onImport, onDownloadTemplate, loadin
                 {/* File Info */}
                 {fileList.length > 0 && !loading && (
                     <Alert
-                        message={t("employee.import.fileSelected")}
+                        message={t("employee.fileSelected")}
                         description={
                             <Space>
                                 <Text strong>{fileList[0].name}</Text>

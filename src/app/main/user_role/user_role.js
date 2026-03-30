@@ -4,21 +4,18 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Actions from "./store/actions";
 import reducer from "./store/reducers";
 import withReducer from "app/store/with_reducer";
-import { PlusOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import AddRoleForm from "./components/AddRole";
+import { EditOutlined, SearchOutlined } from '@ant-design/icons';
 import AddEditUser from "./components/AddEditUser";
 import { notificationPopup } from "app/helpers/common";
 import './index.scss';
 import { useTranslation } from "react-i18next";
 
-const RoleManagement = () => {
+const UserRoleManagement = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const [page, setPage] = useState(1);
     const [dataList ,setDataList] = useState([]);
     const [checkDataList, setCheckDataList] = useState(false);
-    const [checkRole, setCheckRole] = useState(false);
-    const [openAddRole, setOpenAddRole] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
@@ -57,12 +54,6 @@ const RoleManagement = () => {
     }, [checkDataList, page, limit, dispatch]);
 
     useEffect(() => {
-        if (checkRole) {
-            dispatch(Actions.fetchListRole());
-        }
-    }, [dispatch, checkRole]);
-
-    useEffect(() => {
         if (createRole) {
             notificationPopup(
                 createRole.status,
@@ -97,13 +88,6 @@ const RoleManagement = () => {
         setCheckDataList(true);
     };
 
-
-    const handleAddRole = (data) => {
-        dispatch(Actions.CreateRole(data));
-        setOpenAddRole(false);
-        setCheckRole(true);
-    };
-
     const handleSearch = (keyword) => {
         setSearchTerm(keyword);
 
@@ -126,7 +110,8 @@ const RoleManagement = () => {
 
         return roleNames.map(roleName => {
             const role = roleOptions.find(r => r.roleName === roleName);
-            return role ? role.discription : roleName;
+            
+            return role ? role.description : roleName;
         });
     };
 
@@ -147,6 +132,8 @@ const RoleManagement = () => {
             key: "roles",
             render: (record) => {
                 const descriptions = mapRoleNamesToDescriptions(record.roles, roleOptions);
+
+                console.log("descriptions", descriptions);
 
                 return (
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -195,9 +182,9 @@ const RoleManagement = () => {
         <Row className="user-role-page  page-base">
             <Col span="24" className="user-role-top">
                 <h2 className="user-role-title">{t("userRole.title")}</h2>
-                <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={() => setOpenAddRole(true)}>
+                {/* <Button type="primary" shape="round" icon={<PlusOutlined/>} onClick={() => setOpenAddRole(true)}>
                     {t("userRole.addRole")}
-                </Button>
+                </Button> */}
             </Col>
             <Col span={24} className="header-candidate">
                 <Row>
@@ -224,9 +211,9 @@ const RoleManagement = () => {
                                         icon={<SearchOutlined />}
                                         onClick={() => handleSearch(searchTerm)}
                                         style={{
-                                        color: "#999",
-                                        background: "#f5f5f7",
-                                        border: "none",
+                                            color: "#999",
+                                            background: "#f5f5f7",
+                                            border: "none",
                                         }}
                                     />
                                 }
@@ -285,12 +272,6 @@ const RoleManagement = () => {
                     </div>
                 </div>
 
-                <AddRoleForm
-                    open={openAddRole}
-                    onCancel={() => setOpenAddRole(false)}
-                    onSubmit={handleAddRole}
-                />
-
                 <AddEditUser
                     open={openEdit}
                     user={editingUser}
@@ -307,4 +288,7 @@ const RoleManagement = () => {
     );
 };
 
-export default withReducer("userRole", reducer)(RoleManagement);
+export default withReducer("userRole", reducer)(UserRoleManagement);
+
+
+

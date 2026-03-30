@@ -37,6 +37,7 @@ const initialState = {
     },
     importLoading: false,
     importError: null,
+    importSuccess: null,
     downloadTemplateLoading: false,
     downloadTemplateError: null,
 }
@@ -64,10 +65,7 @@ const dashboardReducer = (state  = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                employleList: action.payload.data,
-                page: action.payload.pageableRep.page,
-                limit: action.payload.pageableRep.limit,
-                totalElement: action.payload.pageableRep.totalElements,
+                employleList: action.payload.data.data,
                 page: action.payload.data.pageableRep.page,
                 limit: action.payload.data.pageableRep.limit,
                 totalElement: action.payload.data.pageableRep.totalElements,
@@ -173,12 +171,14 @@ const dashboardReducer = (state  = initialState, action) => {
             return {
                 ...state,
                 importLoading: false,
+                importSuccess: action.payload,
                 importError: null,
             }
         case Action.IMPORT_EXCEL_FAILURE:
             return {
                 ...state,
                 importLoading: false,
+                importSuccess: null,
                 importError: action.payload,
             }
         

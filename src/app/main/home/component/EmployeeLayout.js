@@ -111,13 +111,13 @@ const EmployeeLayout = ({
     const autoCompleteOptions =
         dataList?.length > 0
             ? dataList.map((item) => ({
-                key: item.employeeId,
-                value: `${item.firstName || ""}${item.lastName || ""}`.trim(),
+                key: item.userId,
+                value: `${item?.username || ""}`.trim(),
                 label: (
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <span style={{ color: "#000" }}>
                             <b>
-                                {item.firstName} {item.lastName}
+                                {item?.username}
                             </b>
                         </span>
                     </div>

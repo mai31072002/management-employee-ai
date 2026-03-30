@@ -9,7 +9,8 @@ const { Option } = Select;
 const AddRoleForm = ({
     open,
     onCancel,
-    onSubmit
+    onSubmit,
+    role = null
 }) => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
@@ -27,25 +28,41 @@ const AddRoleForm = ({
 
     useEffect(() => {
         if (open) {
-            form.resetFields();
+            if (role) {
+                // Edit mode - populate form with role data
+                form.setFieldsValue({
+                    roleName: role.roleName,
+                    description: role.description,
+                    permission: role.permissions || role.permission || []
+                });
+            } else {
+                // Add mode - reset form
+                form.resetFields();
+            }
         }
-    }, [open, form]);
+    }, [open, form, role]);
 
     const handleFinish = (values) => {
+        // Convert permission IDs to permission names
+        const permissionNames = values.permission.map(permId => {
+            const permissionItem = permission.find(p => p.id === permId);
+            return permissionItem ? permissionItem.permissionName : permId;
+        });
+
         onSubmit({
             roleName: values.roleName,
             description: values.description,
-            permission: values.permission
+            permission: permissionNames
         });
     };
 
     return (
         <Modal
             open={open}
-            title={t("userRole.modalAddRoleTitle")}
+            title={role ? "Chỉnh sửa Quyền" : t("userRole.modalAddRoleTitle")}
             onCancel={onCancel}
             footer={null}
-            destroyOnHidden
+            destroyOnClose
         >
             <Form
                 layout="vertical"
@@ -96,7 +113,7 @@ const AddRoleForm = ({
                         {t("common.cancel")}
                     </Button>
                     <Button type="primary" htmlType="submit">
-                        {t("userRole.createRole")}
+                        {role ? "Cập nhật" : t("userRole.createRole")}
                     </Button>
                 </Form.Item>
             </Form>

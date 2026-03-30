@@ -11,6 +11,7 @@
     "add": "Thêm mới",
     "update": "Cập nhật",
     "delete": "Xóa",
+    "edit": "Chỉnh sửa",
     "confirmDeleteTitle": "Xác nhận xóa",
     "all": "Tất cả",
     "firstName": "Họ",
@@ -23,8 +24,9 @@
     "leverManagement": "Quản lý cấp bậc",
     "ot": "OT",
     "settings": "Cài đặt",
-    "account": "Tài khoản",
+    "infoAccount": "Thông tin tài khoản",
     "authorization": "Phân quyền",
+    "roleManagement": "Quản lý Quyền",
     "files": "Files",
     "logoutTitle": "Đăng xuất",
     "logoutConfirm": "Bạn có chắc chắn muốn đăng xuất?",
@@ -151,7 +153,12 @@
       "title": "Tải mẫu",
       "success": "Tải mẫu thành công",
       "error": "Tải mẫu thất bại"
-    }
+    },
+    "fileSelected": "File đã chọn",
+    "importing": "Đang nhập...",
+    "noFileSelected": "Chưa chọn file",
+    "fileTypeError": "Vui lòng tải file Excel (.xlsx hoặc .xls)",
+    "fileSizeError": "Dung lượng file phải nhỏ hơn 5MB"
   },
   "ot": {
     "addOt": "Thêm OT",
@@ -300,6 +307,23 @@
     "validationRoleDescRequired": "Vui lòng nhập mô tả",
     "validationPermissionRequired": "Vui lòng chọn permission",
     "permissionPlaceholder": "Chọn permission"
+  },
+  "role": {
+    "title": "Quản lý Quyền",
+    "addNew": "Thêm Quyền Mới",
+    "searchPlaceholder": "Tìm kiếm theo tên quyền hoặc mô tả...",
+    "total": "Tổng {{count}} quyền",
+    "pagination": "{{start}}-{{end}} của {{total}} quyền",
+    "id": "ID",
+    "name": "Tên Quyền",
+    "description": "Mô Tả",
+    "permissions": "Quyền Hạn",
+    "createSuccess": "Tạo role thành công",
+    "deleteSuccess": "Xóa role thành công",
+    "updateSuccess": "Cập nhật role thành công",
+    "deleteError": "Xóa role thất bại",
+    "deleteConfirm": "Bạn có chắc chắn muốn xóa role này?",
+    "deleteDescription": "Hành động này không thể hoàn tác."
   },
   "user": {
     "editTitle": "Chỉnh sửa thông tin người dùng",
