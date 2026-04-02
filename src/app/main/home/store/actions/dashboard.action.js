@@ -564,7 +564,9 @@ export const fetchSearchEmployee = (search, page, limit) => async (dispatch) => 
     // Lấy signal dành riêng cho việc tìm kiếm nhân viên
     const signal = getSearchSignal('EMPLOYEE_SEARCH');
 
-    dispatch({type: LIST_EMPLOYEE_LOADING});
+    if (!signal.aborted) {
+        dispatch({ type: LIST_EMPLOYEE_LOADING });
+    }
 
     try {
         const res = await axios.get(`/users/search?keyword=${search}&page=${page}&size=${limit}`, {signal});
